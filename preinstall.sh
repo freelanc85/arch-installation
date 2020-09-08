@@ -72,7 +72,9 @@ pacstrap /mnt base base-devel linux linux-firmware vim nano sudo --noconfirm --n
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 
-# swapfile
+echo "--------------------------------------"
+echo "-- swapfile  --"
+echo "--------------------------------------"
 truncate -s 0 /swap/swapfile
 chattr +C /swap/swapfile
 btrfs property set swap/swapfile compression none
