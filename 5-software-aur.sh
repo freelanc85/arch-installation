@@ -46,7 +46,7 @@ cd ${HOME}/yay
 makepkg -si
 
 for PKG in "${PKGS[@]}"; do
-    yay -S --noconfirm $PKG
+    runuser -l  felipe -c "yay -S --noconfirm ${PKG}"
 done
 
 echo -e "\nDone!\n"
