@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 #
+echo "Please enter disk: (example /dev/sda)"
+read DISK
 echo "--------------------------------------"
 echo "-- swapfile  --"
 echo "--------------------------------------"
