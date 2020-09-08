@@ -27,7 +27,7 @@ reboot
 ### Arch Linux First Boot
 
 ```bash
-pacman -S --no-confirm pacman-contrib curl git
+pacman -S --noconfirm git
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 ./2-setup.sh

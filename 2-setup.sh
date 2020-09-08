@@ -12,9 +12,9 @@ if ! source install.conf; then
 
 	read -p "Please enter username:" username
 
-	read -ps "Please enter password:" password
+	read -p "Please enter password:" password
 
-	read -sp "Please repeat password:" password2
+	read -p "Please repeat password:" password2
 
 	# Check both passwords match
 	if [ "$password" != "$password2" ]; then
