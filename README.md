@@ -1,4 +1,4 @@
-# Modified Titus ArchMatic Installer Script
+# Modified version of Titus ArchMatic Installer Script
 
 <img src="https://i.imgur.com/Yn29sze.png" />
 
@@ -15,7 +15,9 @@ First, setup the boot USB, boot arch live iso, and run the `preinstall.sh` from 
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
 ```bash
-pacman -Syy wget
+pacman -Syy --noconfirm wget
+```
+```bash
 wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/0-preinstall.sh
 sh 0-preinstall.sh
 arch-chroot /mnt
