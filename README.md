@@ -15,7 +15,7 @@ First, setup the boot USB, boot arch live iso, and run the `preinstall.sh` from 
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
 ```bash
-pacman -Syy wget
+pacman -Syy --no-confirm wget
 wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/preinstall.sh
 sh preinstall.sh
 reboot
