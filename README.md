@@ -16,8 +16,6 @@ This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
 ```bash
 pacman -Syy --noconfirm wget
-```
-```bash
 wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/0-preinstall.sh
 sh 0-preinstall.sh
 arch-chroot /mnt
