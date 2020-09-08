@@ -71,7 +71,7 @@ echo "--------------------------------------"
 pacstrap /mnt base base-devel linux linux-firmware vim nano sudo --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt /bin/bash -x <<'EOF'
-
+#!/usr/bin/env bash
 echo "--------------------------------------"
 echo "-- swapfile  --"
 echo "--------------------------------------"
