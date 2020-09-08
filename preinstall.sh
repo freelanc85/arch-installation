@@ -18,7 +18,7 @@ curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=https&use_mir
 
 
 echo -e "\nInstalling prereqs...\n$HR"
-pacman -S --noconfirm gptfdisk btrfs-progs
+pacman -S --noconfirm btrfs-progs
 
 echo "-------------------------------------------------"
 echo "-------select your disk to format----------------"
@@ -84,15 +84,15 @@ swapon /swap/swapfile
 echo '/swap/swapfile none swap defaults 0 0' >> /etc/fstab
 
 echo "--------------------------------------"
-echo "-- Bootloader Systemd Installation  --"
+echo "-- Bootloader Installation  --"
 echo "--------------------------------------"
-bootctl install
-cat <<EOF > /boot/loader/entries/arch.conf
-title Arch Linux  
-linux /vmlinuz-linux  
-initrd  /initramfs-linux.img  
-options root=${DISK}1 rw
-EOF
+pacman -S grub grub-btrfs --noconfirm --needed
+
+sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
+
+mkinitcpio -p linux
+grub-install --target=i386-pc /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"
 echo "--          Network Setup           --"
