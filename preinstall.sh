@@ -11,7 +11,7 @@ echo "-------------------------------------------------"
 echo "Setting up mirrors for optimal download - US Only"
 echo "-------------------------------------------------"
 timedatectl set-ntp true
-pacman -S --noconfirm pacman-contrib
+pacman -S --noconfirm pacman-contrib wget
 mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 - > /etc/pacman.d/mirrorlist
 
@@ -31,28 +31,40 @@ echo -e "\nFormatting disk...\n$HR"
 echo "--------------------------------------"
 
 # disk prep
-sgdisk -Z ${DISK} # zap all on disk
-
-# Back up my original with: sfdisk -d /dev/sda > sda.dump
-# Restore
-sfdisk /dev/sda < sfdisk.dump
-
-# label partitions
-sgdisk -c 1:"UEFISYS" ${DISK}
-sgdisk -c 2:"ROOT" ${DISK}
+wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/sfdisk.layout
+sfdisk /dev/sda < sfdisk.layout
 
 # make filesystems
 echo -e "\nCreating Filesystems...\n$HR"
 
-mkfs.vfat -F32 -n "UEFISYS" "${DISK}1"
-mkfs.ext4 -L "ROOT" "${DISK}2"
+mkfs.ext4 -L "BOOT" "${DISK}1"
+mkfs.btrfs -L "ROOT" "${DISK}2"
 
 # mount target
-mkdir /mnt
-mount -t ext4 "${DISK}2" /mnt
-mkdir /mnt/boot
-mkdir /mnt/boot/efi
-mount -t vfat "${DISK}1" /mnt/boot/
+mount "${DISK}2" /mnt
+btrfs su cr /mnt/@
+btrfs su cr /mnt/@home
+btrfs su cr /mnt/@var
+btrfs su cr /mnt/@srv
+btrfs su cr /mnt/@opt
+btrfs su cr /mnt/@tmp
+btrfs su cr /mnt/@swap
+btrfs su cr /mnt/@.snapshots
+umount /mnt
+
+mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}2" /mnt
+
+mkdir /mnt/{boot,home,var,srv,opt,tmp,swap,.snapshots}
+
+mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}2" /mnt/home
+mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}2" /mnt/srv
+mount -o noatime,compress=lzo,space_cache,subvol=@tmp "${DISK}2" /mnt/tmp
+mount -o noatime,compress=lzo,space_cache,subvol=@opt "${DISK}2" /mnt/opt
+mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}2" /mnt/.snapshots
+
+mount -o nodatacow,subvol=@swap "${DISK}2" /mnt/swap
+mount -o nodatacow,subvol=@var "${DISK}2" /mnt/var
+mount "${DISK}1" /mnt/boot
 
 echo "--------------------------------------"
 echo "-- Arch Install on Main Drive       --"
@@ -60,6 +72,16 @@ echo "--------------------------------------"
 pacstrap /mnt base base-devel linux linux-firmware vim nano sudo --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
+
+# swapfile
+truncate -s 0 /swap/swapfile
+chattr +C /swap/swapfile
+btrfs property set swap/swapfile compression none
+dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress
+chmod 600 /swap/swapfile
+mkswap /swap/swapfile
+swapon /swap/swapfile
+echo '/swap/swapfile none swap defaults 0 0' >> /etc/fstab
 
 echo "--------------------------------------"
 echo "-- Bootloader Systemd Installation  --"

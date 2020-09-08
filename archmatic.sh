@@ -43,11 +43,11 @@ function setup {
     fi
 
     echo "-------------------------------------------------"
-    echo "Setting up mirrors for optimal download - US Only"
+    echo "Setting up mirrors for optimal download - BR Only"
     echo "-------------------------------------------------"
     pacman -S --noconfirm pacman-contrib curl
     mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
-    curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 - > /etc/pacman.d/mirrorlist
+    curl -s "https://www.archlinux.org/mirrorlist/?country=BR&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 - > /etc/pacman.d/mirrorlist
 
     echo "-------------------------------------------------"
     echo "              makepkg configuration              "
@@ -65,12 +65,12 @@ function setup {
     echo "-------------------------------------------------"
     sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
     locale-gen
-    timedatectl --no-ask-password set-timezone America/Chicago
+    timedatectl --no-ask-password set-timezone America/Sao_Paulo
     timedatectl --no-ask-password set-ntp 1
     localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_COLLATE="" LC_TIME="en_US.UTF-8"
 
     # Set keymaps
-    localectl --no-ask-password set-keymap us
+    localectl --no-ask-password set-keymap br
 
     # Hostname
     hostnamectl --no-ask-password set-hostname $hostname
@@ -330,7 +330,7 @@ fi' > ${HOME}/.xinitrc
     echo
     echo "Configuring vconsole.conf to set a larger font for login shell"
 
-    printf 'KEYMAP=us
+    printf 'KEYMAP=br
 FONT=ter-v32b' < /etc/vconsole.conf
 
     # ------------------------------------------------------------------------
@@ -368,11 +368,11 @@ FONT=ter-v32b' < /etc/vconsole.conf
 
     # ------------------------------------------------------------------------
 
-    echo
-    echo "Enabling bluetooth daemon and setting it to auto-start"
+    #echo
+    #echo "Enabling bluetooth daemon and setting it to auto-start"
 
     sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
-    sudo systemctl enable --now bluetooth.service
+    #sudo systemctl enable --now bluetooth.service
 
     # ------------------------------------------------------------------------
 

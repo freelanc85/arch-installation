@@ -63,7 +63,7 @@ sudo sed -i 's|initramfs-linux.img|initramfs-linux-lts.img|g' /boot/loader/entri
 echo -e "\nConfiguring vconsole.conf to set a larger font for login shell"
 
 sudo cat <<EOF > /etc/vconsole.conf
-KEYMAP=us
+KEYMAP=br
 FONT=ter-v32b
 EOF
 
@@ -103,7 +103,7 @@ sudo systemctl enable --now lightdm.service
 echo -e "\nEnabling bluetooth daemon and setting it to auto-start"
 
 sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
-sudo systemctl enable --now bluetooth.service
+#sudo systemctl enable --now bluetooth.service
 
 # ------------------------------------------------------------------------
 
