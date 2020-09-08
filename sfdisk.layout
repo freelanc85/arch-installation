@@ -5,4 +5,4 @@ unit: sectors
 sector-size: 512
 
 /dev/sda1 : start=        2048, size=     2097152, type=83
-/dev/sda2 : start=     2099200, size=   31455232, type=83
+/dev/sda2 : start=     2099200, size=   466762928, type=83
