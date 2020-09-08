@@ -70,7 +70,7 @@ echo "-- Arch Install on Main Drive       --"
 echo "--------------------------------------"
 pacstrap /mnt base base-devel linux linux-firmware vim nano sudo --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab
-arch-chroot /mnt
+arch-chroot /mnt /bin/bash -x <<'EOF'
 
 echo "--------------------------------------"
 echo "-- swapfile  --"
@@ -113,3 +113,5 @@ umount -R /mnt
 echo "--------------------------------------"
 echo "--   SYSTEM READY FOR FIRST BOOT    --"
 echo "--------------------------------------"
+
+EOF
