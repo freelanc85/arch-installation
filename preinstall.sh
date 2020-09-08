@@ -91,7 +91,7 @@ pacman -S grub grub-btrfs --noconfirm --needed
 sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
-grub-install --target=i386-pc /dev/sda
+grub-install --target=i386-pc ${DISK}
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"
