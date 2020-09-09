@@ -110,7 +110,7 @@ sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
 echo -e "\nEnabling the cups service daemon so we can print"
 
 systemctl enable --now org.cups.cupsd.service
-sudo ntpd -qg
+#sudo ntpd -qg
 sudo systemctl enable --now ntpd.service
 sudo systemctl disable dhcpcd.service
 sudo systemctl stop dhcpcd.service
@@ -125,13 +125,6 @@ sudo sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 
 # Remove no password sudo rights
 sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-
-# Clean orphans pkg
-if [[ ! -n $(pacman -Qdt) ]]; then
-	echo "No orphans to remove."
-else
-	pacman -Rns $(pacman -Qdtq)
-fi
 
 # Replace in the same state
 cd $pwd
