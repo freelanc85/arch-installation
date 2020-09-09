@@ -32,7 +32,8 @@ PKGS=(
 
     # --- Login Display Manager
         'lightdm'                   # Base Login Manager
-        'lightdm-webkit2-greeter'   # Framework for Awesome Login Themes
+        #'lightdm-webkit2-greeter'   # Framework for Awesome Login Themes
+        'lightdm-gtk-greeter'
 
     # --- Networking Setup
         'wpa_supplicant'            # Key negotiation for WPA wireless networks
