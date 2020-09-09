@@ -30,15 +30,14 @@ echo -e "\nFormatting disk...\n$HR"
 echo "--------------------------------------"
 
 # disk prep
-#wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/sfdisk.layout
-#sfdisk /dev/sda < sfdisk.layout
-cfdisk /dev/sda
+wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/sfdisk.layout
+sfdisk /dev/sda < sfdisk.layout
 
 # make filesystems
 echo -e "\nCreating Filesystems...\n$HR"
 
 mkfs.ext4 -L "BOOT" "${DISK}1"
-mkfs.btrfs -L "ROOT" "${DISK}2"
+mkfs.btrfs -f -L "ROOT" "${DISK}2"
 
 # mount target
 mount "${DISK}2" /mnt
