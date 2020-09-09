@@ -27,20 +27,12 @@ if ! source install.conf; then
 fi
 
 echo "-------------------------------------------------"
-echo "Setting up mirrors for optimal download - BR Only"
+echo "Setting up mirrors for optimal download"
 echo "-------------------------------------------------"
 pacman -S --noconfirm pacman-contrib curl
 mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 curl -s "https://www.archlinux.org/mirrorlist/?country=BR&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 - > /etc/pacman.d/mirrorlist
 reflector --latest 200 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-
-nc=$(grep -c ^processor /proc/cpuinfo)
-echo "You have " $nc" cores."
-echo "-------------------------------------------------"
-echo "Changing the makeflags for "$nc" cores."
-sudo sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j$nc"/g' /etc/makepkg.conf
-echo "Changing the compression settings for "$nc" cores."
-sudo sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g' /etc/makepkg.conf
 
 echo "-------------------------------------------------"
 echo "       Setup Language to US and set locale       "
