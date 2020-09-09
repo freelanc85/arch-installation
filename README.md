@@ -60,9 +60,6 @@ __[Arch Linux Installation Gude](https://github.com/rickellis/Arch-Linux-Install
 sudo wifi-menu`
 ```
 
-#### Initialize Xorg:
-At the terminal, run:
-
-```bash
-xinit
-```
+#### Eliminate Tearing:
+edit: /usr/share/X11/xorg.conf.d/10-amdgpu.conf
+add: Option "TearFree" "on"
