@@ -65,4 +65,4 @@ edit: /usr/share/X11/xorg.conf.d/10-amdgpu.conf
 add: Option "TearFree" "on"
 
 to be edited
-add polkit-gnome arandr corectrl pamac-aur-git
+add polkit-gnome arandr corectrl pamac-aur-git firefox
