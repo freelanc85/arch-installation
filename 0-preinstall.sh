@@ -30,8 +30,9 @@ echo -e "\nFormatting disk...\n$HR"
 echo "--------------------------------------"
 
 # disk prep
-wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/sfdisk.layout
-sfdisk /dev/sda < sfdisk.layout
+#wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/sfdisk.layout
+#sfdisk /dev/sda < sfdisk.layout
+cfdisk /dev/sda
 
 # make filesystems
 echo -e "\nCreating Filesystems...\n$HR"
