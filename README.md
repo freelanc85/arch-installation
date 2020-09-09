@@ -27,7 +27,8 @@ reboot
 ### Arch Linux First Boot
 
 ```bash
-pacman -S --noconfirm git
+useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash felipe
+passwd felipe
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 ./2-setup.sh
