@@ -8,35 +8,38 @@ This README contains the steps I do to install and configure a fully-functional 
 
 ## Setup Boot and Arch ISO on USB key
 
-First, setup the boot USB, boot arch live iso, and run the `preinstall.sh` from terminal. 
+First, setup the boot USB and boot arch live iso. 
 
 ### Arch Live ISO (Pre-Install)
 
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
-```bash
-pacman -Syy --noconfirm wget
-wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/0-preinstall.sh
-sh 0-preinstall.sh
-arch-chroot /mnt
-wget https://raw.githubusercontent.com/fsimchen/ArchMatic/master/1-preinstall.sh
-sh 1-preinstall.sh
-reboot
-```
-
-### Arch Linux First Boot
+Edit the variables.sh file with your data for the scripts use.
 
 ```bash
-useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash felipe
-passwd felipe
-pacman -Syy --noconfirm git reflector xf86-video-amdgpu
+pacman -Syy git
+
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
-./2-setup.sh
-./3-base.sh
-./4-software-pacman.sh
-./5-software-aur.sh
-./6-post-setup.sh
+
+sh 1-script.sh
+
+arch-chroot /mnt
+
+git clone https://github.com/fsimchen/ArchMatic
+cd ArchMatic
+
+sh 2-script.sh
+
+sh 3-script.sh
+
+sh 4-script.sh
+
+sh 5-script.sh
+
+sh 6-script.sh
+
+sh 7-script.sh
 ```
 
 ### Don't just run these scripts. Examine them. Customize them. Create your own versions.
@@ -52,7 +55,7 @@ I also install the LTS Kernel along side the rolling one, and configure my bootl
 
 ### Troubleshooting Arch Linux
 
-__[Arch Linux Installation Gude](https://github.com/rickellis/Arch-Linux-Install-Guide)__
+__[Arch Linux Installation Guide](https://github.com/rickellis/Arch-Linux-Install-Guide)__
 
 #### No Wifi
 
@@ -60,9 +63,11 @@ __[Arch Linux Installation Gude](https://github.com/rickellis/Arch-Linux-Install
 sudo wifi-menu`
 ```
 
-#### Eliminate Tearing:
+#### to be edited:
+
+Eliminate Tearing
 edit: /usr/share/X11/xorg.conf.d/10-amdgpu.conf
 add: Option "TearFree" "on"
 
-to be edited
+more do add
 add polkit-gnome arandr corectrl pamac-aur-git firefox
