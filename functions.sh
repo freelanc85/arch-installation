@@ -188,7 +188,6 @@ function installBase {
             'pulseaudio'        # Pulse Audio sound components
             'pulseaudio-alsa'   # ALSA configuration for pulse audio
             'pavucontrol'       # Pulse Audio volume control
-            'pnmixer'           # System tray volume control
 
         # --- Bluetooth
             'bluez'                 # Daemons for the bluetooth protocol stack
@@ -341,7 +340,7 @@ function installSoftwareAur {
         'pamac-aur-git'
         'visual-studio-code-bin'
         'virtualbox-ext-oracle'
-        'pnmixer'
+        'pnmixer'                   # System tray volume control
         'xfce4-mixer'
         'nitrogen'
         
