@@ -11,7 +11,7 @@ function preInstallSetup {
     echo "-------------------------------------------------"
     echo "Setting up mirrors for optimal download \n"
     echo "-------------------------------------------------"
-    reflector --latest 200 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+    reflector --latest 25 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Syy
 
     # disk prep
@@ -134,7 +134,7 @@ function installSetup {
     echo "-------------------------------------------------"
     echo "Setting up mirrors for optimal download"
     echo "-------------------------------------------------"
-    reflector --latest 200 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+    reflector --latest 25 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
     # Add sudo rights
     sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
