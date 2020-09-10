@@ -222,7 +222,7 @@ function installSoftware {
 
         # SYSTEM --------------------------------------------------------------
 
-        'linux-lts'             # Long term support kernel
+        #'linux-lts'             # Long term support kernel
         'virtualbox'
         'virtualbox-host-modules-arch'
         'qt5-x11extras'
