@@ -376,8 +376,8 @@ function finalSetup {
     echo -e "\nDisabling buggy cursor inheritance"
 
     # When you boot with multiple monitors the cursor can look huge. This fixes it.
-    echo '[Icon Theme]' >> /usr/share/icons/default/index.theme
-    echo '#Inherits=Theme' >> /usr/share/icons/default/index.theme
+    echo '[Icon Theme]' | sudo tee /usr/share/icons/default/index.theme
+    echo '#Inherits=Theme' | sudo tee -a /usr/share/icons/default/index.theme
 
     # ------------------------------------------------------------------------
 
@@ -434,8 +434,8 @@ function finalSetup {
     git clone https://github.com/ChrisTitusTech/material-awesome.git $HOME/.config/awesome
 
     # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
-    echo 'XDG_CURRENT_DESKTOP=Unity' >> /etc/environment
-    echo 'QT_QPA_PLATFORMTHEME=gtk2' >> /etc/environment
+    echo 'XDG_CURRENT_DESKTOP=Unity' | sudo tee -a /etc/environment
+    echo 'QT_QPA_PLATFORMTHEME=gtk2' | sudo tee -a /etc/environment
 
     # VirtualBox theme fix
     sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
