@@ -22,18 +22,22 @@ pacman -Syy git
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 
-sh 1_preInstall.sh
+sh 1_preInstallSetup.sh
 
 arch-chroot /mnt
 
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 
-sh 2_installSetup.sh
-sh 3_installBase.sh
-sh 4_installSoftware.sh
-sh 5_installSoftwareAur.sh
-sh 6_finalSetup.sh
+sh 2_preInstall.sh
+reboot
+
+# Log in as normal user now
+sh 3_installSetup.sh
+sh 4_installBase.sh
+sh 5_installSoftware.sh
+sh 6_installSoftwareAur.sh
+sh 7_finalSetup.sh
 ```
 
 ### Don't just run these scripts. Examine them. Customize them. Create your own versions.
@@ -42,14 +46,6 @@ sh 6_finalSetup.sh
 
 ### System Description
 This runs Awesome Window Manager with the base configuration from the Material-Awesome project <https://github.com/ChrisTitusTech/material-awesome>.
-
-To boot I use `systemd` because it's minimalist, comes built-in, and since the Linux kernel has an EFI image, all we need is a way to execute it.
-
-I also install the LTS Kernel along side the rolling one, and configure my bootloader to offer both as a choice during startup. This enables me to switch kernels in the event of a problem with the rolling one.
-
-### Troubleshooting Arch Linux
-
-__[Arch Linux Installation Guide](https://github.com/rickellis/Arch-Linux-Install-Guide)__
 
 #### No Wifi
 
