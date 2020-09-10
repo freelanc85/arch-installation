@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Run logged as root
-function um {
+function preInstallSetup {
     # set keyboard
     loadkeys $KEYBOARD
 
@@ -54,9 +54,7 @@ function um {
 }
 
 # Run logged as root
-function dois {
-    # ------ NEXT FILE ------
-    #!/usr/bin/env bash
+function preInstall {
     echo "--------------------------------------"
     echo "-- Swapfile  --"
     echo "--------------------------------------"
@@ -75,8 +73,8 @@ function dois {
     pacman -Syy
 
     # Base pkgs
-    pacman -S vim nano sudo amd-ucode btrfs-progs wget curl git grub grub-btrfs networkmanager dhclient --noconfirm --needed
-    pacman -S network-manager-applet wpa_supplicant dialog os-prober mtools dosfstools linux-headers reflector cups xdg-utils xdg-user-dirs --noconfirm --needed
+    pacman -S nano sudo amd-ucode btrfs-progs wget curl git grub grub-btrfs networkmanager dhclient --noconfirm --needed
+    pacman -S network-manager-applet dialog os-prober mtools linux-headers reflector xdg-utils xdg-user-dirs --noconfirm --needed
 
     echo "--------------------------------------"
     echo "-- Bootloader Setup  --"
@@ -107,13 +105,14 @@ function dois {
     umount -R /mnt
 
     echo "--------------------------------------"
-    echo "--   SYSTEM READY FOR FIRST BOOT    --"
+    echo "--   SYSTEM READY FOR FIRST REBOOT    --"
+    echo "Don’t forget to take out the live USB before powering on the system again."
     echo "--------------------------------------"
     exit
 }
 
 # Run logged as normal user
-function tres {
+function installSetup {
     echo "-------------------------------------------------"
     echo "       Setup Language to US and set locale       "
     echo "-------------------------------------------------"
@@ -146,7 +145,7 @@ function tres {
 }
 
 # Run logged as normal user
-function quatro {
+function installBase {
     echo -e "\nInstalling Base System\n"
 
     PKGS=(
@@ -167,20 +166,20 @@ function quatro {
             'rofi'                  # Menu System
             'picom'                 # Translucent Windows
             'xclip'                 # System Clipboard
-            'gnome-polkit'          # Elevate Applications
+            'polkit-gnome'          # Elevate Applications
+            'gnome-keyring'         # Elevate Applications
             'lxappearance'          # Set System Themes
+            'arandr'
 
         # --- Login Display Manager
             'lightdm'                   # Base Login Manager
-            #'lightdm-webkit2-greeter'   # Framework for Awesome Login Themes
             'lightdm-gtk-greeter'
+            'lightdm-gtk-greeter-settings'
 
         # --- Networking Setup
             'wpa_supplicant'            # Key negotiation for WPA wireless networks
-            'dialog'                    # Enables shell scripts to trigger dialog boxex
             'openvpn'                   # Open VPN support
             'networkmanager-openvpn'    # Open VPN plugin for NM
-            'network-manager-applet'    # System tray icon/utility for network connectivity
             'libsecret'                 # Library for storing passwords
         
         # --- Audio
@@ -216,7 +215,7 @@ function quatro {
 }
 
 # Run logged as normal user
-function cinco {
+function installSoftware {
     echo -e "\nINSTALLING SOFTWARE\n"
 
     PKGS=(
@@ -224,6 +223,9 @@ function cinco {
         # SYSTEM --------------------------------------------------------------
 
         'linux-lts'             # Long term support kernel
+        'virtualbox'
+        'virtualbox-host-modules-arch'
+        'qt5-x11extras'
 
         # TERMINAL UTILITIES --------------------------------------------------
 
@@ -243,7 +245,7 @@ function cinco {
         'rsync'                 # Remote file sync utility
         'speedtest-cli'         # Internet speed via terminal
         'terminus-font'         # Font package with some bigger fonts for login terminal
-        'tlp'                   # Advanced laptop power management
+        #'tlp'                   # Advanced laptop power management
         'unrar'                 # RAR compression program
         'unzip'                 # Zip compression program
         'terminator'            # Terminal emulator
@@ -261,11 +263,12 @@ function cinco {
         'dosfstools'            # DOS Support
         'exfat-utils'           # Mount exFat drives
         'gparted'               # Disk utility
+        'parted'                # Disk utility
         'gvfs-mtp'              # Read MTP Connected Systems
         'gvfs-smb'              # More File System Stuff
+        'nautilus'              # Filesystem browser
         'nautilus-share'        # File Sharing in Nautilus
         'ntfs-3g'               # Open source implementation of NTFS file system
-        'parted'                # Disk utility
         'samba'                 # Samba File Sharing
         'smartmontools'         # Disk Monitoring
         'smbclient'             # SMB Connection 
@@ -276,10 +279,10 @@ function cinco {
         'flameshot'             # Screenshots
         'freerdp'               # RDP Connections
         'libvncserver'          # VNC Connections
-        'nautilus'              # Filesystem browser
         'remmina'               # Remote Connection
         'veracrypt'             # Disc encryption utility
         'variety'               # Wallpaper changer
+        'ttf-fira-code'
 
         # DEVELOPMENT ---------------------------------------------------------
 
@@ -293,11 +296,12 @@ function cinco {
         # MEDIA ---------------------------------------------------------------
 
         'celluloid'             # Video player
+        'vlc'                   # Video player
         
         # GRAPHICS AND DESIGN -------------------------------------------------
 
         'gcolor2'               # Colorpicker
-        'gimp'                  # GNU Image Manipulation Program
+        'krita'                 
         'ristretto'             # Multi image viewer
 
         # PRODUCTIVITY --------------------------------------------------------
@@ -317,7 +321,7 @@ function cinco {
 }
 
 # Run logged as normal user
-function seis {
+function installSoftwareAur {
     echo -e "\nINSTALLING AUR SOFTWARE\n"
 
     cd "${HOME}"
@@ -331,8 +335,11 @@ function seis {
         # UTILITIES -----------------------------------------------------------
 
         'i3lock-fancy'              # Screen locker
-        'synology-drive'            # Synology Drive
         'freeoffice'                # Office Alternative
+        'corectrl'
+        'pamac-aur-git'
+        'visual-studio-code-bin'
+        'virtualbox-ext-oracle'
         
         # MEDIA ---------------------------------------------------------------
 
@@ -341,12 +348,10 @@ function seis {
 
         # COMMUNICATIONS ------------------------------------------------------
 
-        'brave-nightly-bin'         # Brave
-        
+        'firefox'
 
         # THEMES --------------------------------------------------------------
 
-        'lightdm-webkit-theme-aether'   # Lightdm Login Theme - https://github.com/NoiSek/Aether#installation
         'materia-gtk-theme'             # Desktop Theme
         'papirus-icon-theme'            # Desktop Icons
         'capitaine-cursors'             # Cursor Themes
@@ -364,42 +369,8 @@ function seis {
 }
 
 # Run logged as normal user
-function sete {
+function finalSetup {
     echo -e "\nFINAL SETUP AND CONFIGURATION"
-
-    # ------------------------------------------------------------------------
-
-    echo -e "\nGenaerating .xinitrc file"
-
-    # Generate the .xinitrc file so we can launch Awesome from the
-    # terminal using the "startx" command
-
-    echo '#!/bin/bash' >> ${HOME}/.xinitrc
-    echo '#!/bin/bash' >> ${HOME}/.xinitrc
-    echo '# Disable bell' >> ${HOME}/.xinitrc
-    echo 'xset -b' >> ${HOME}/.xinitrc
-    echo '' >> ${HOME}/.xinitrc
-    echo '# Disable all Power Saving Stuff' >> ${HOME}/.xinitrc
-    echo 'xset -dpms' >> ${HOME}/.xinitrc
-    echo 'xset s off' >> ${HOME}/.xinitrc
-    echo '' >> ${HOME}/.xinitrc
-    echo '# X Root window color' >> ${HOME}/.xinitrc
-    echo 'xsetroot -solid darkgrey' >> ${HOME}/.xinitrc
-    echo '' >> ${HOME}/.xinitrc
-    echo '# Merge resources (optional)' >> ${HOME}/.xinitrc
-    echo '#xrdb -merge $HOME/.Xresources' >> ${HOME}/.xinitrc
-    echo '' >> ${HOME}/.xinitrc
-    echo 'exit 0' >> ${HOME}/.xinitrc
-
-    # ------------------------------------------------------------------------
-
-    echo -e "\nUpdating /bin/startx to use the correct path"
-
-    # By default, startx incorrectly looks for the .serverauth file in our HOME folder.
-    sudo sed -i 's|xserverauthfile=\$HOME/.serverauth.\$\$|xserverauthfile=\$XAUTHORITY|g' /bin/startx
-
-    # ------------------------------------------------------------------------
-
     echo -e "\nDisabling buggy cursor inheritance"
 
     # When you boot with multiple monitors the cursor can look huge. This fixes it.
@@ -428,9 +399,9 @@ function sete {
     sudo systemctl enable lightdm.service
 
     # ------------------------------------------------------------------------
-    #echo -e "\nEnabling bluetooth daemon and setting it to auto-start"
-    #sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
-    #sudo systemctl enable --now bluetooth.service
+    echo -e "\nEnabling bluetooth daemon and setting it to auto-start"
+    sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
+    sudo systemctl enable --now bluetooth.service
     # ------------------------------------------------------------------------
 
     echo -e "\nEnabling the cups service daemon so we can print"
@@ -438,17 +409,26 @@ function sete {
     systemctl enable --now org.cups.cupsd.service
     sudo systemctl enable --now ntpd.service
     sudo systemctl enable --now NetworkManager.service
+
+    echo -e "\nSetting keymap on Xorg"
     sudo localectl set-x11-keymap $X11KEYMAP
     
-    echo "
-    ###############################################################################
-    # Cleaning
-    ###############################################################################
-    "
+    echo "\n# Cleaning..."
     # Remove no password sudo rights
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
-    echo "
+    # Change the radeon driver with amdgpu for old hardware
+    sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 |g' /etc/default/grub
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+    # Eliminate Tearing
+    sudo sed -i 's|EndSection|        Option "TearFree" "on"\nEndSection|g' /usr/share/X11/xorg.conf.d/10-amdgpu.conf
+
+    # VirtualBox Settings
+    sudo modprobe vboxdrv
+    sudo gpasswd -a $USER vboxusers
+
+    echo "\n
     ###############################################################################
     # Done
     ###############################################################################

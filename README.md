@@ -60,14 +60,5 @@ __[Arch Linux Installation Guide](https://github.com/rickellis/Arch-Linux-Instal
 #### No Wifi
 
 ```bash
-sudo wifi-menu`
+sudo wifi-menu
 ```
-
-#### to be edited:
-
-Eliminate Tearing
-edit: /usr/share/X11/xorg.conf.d/10-amdgpu.conf
-add: Option "TearFree" "on"
-
-more do add
-add polkit-gnome arandr corectrl pamac-aur-git firefox
