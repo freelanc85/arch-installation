@@ -341,6 +341,9 @@ function installSoftwareAur {
         'pamac-aur-git'
         'visual-studio-code-bin'
         'virtualbox-ext-oracle'
+        'pnmixer'
+        'xfce4-mixer'
+        'nitrogen'
         
         # MEDIA ---------------------------------------------------------------
 
