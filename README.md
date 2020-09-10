@@ -32,10 +32,15 @@ cd ArchMatic
 sh 2_preInstall.sh
 reboot
 
-# Log in as normal user now
+# Log in as root
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 sh 3_installSetup.sh
+exit
+
+# Log in as normal user now
+git clone https://github.com/fsimchen/ArchMatic
+cd ArchMatic
 sh 4_installBase.sh
 sh 5_installSoftware.sh
 sh 6_installSoftwareAur.sh

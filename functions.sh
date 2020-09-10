@@ -111,7 +111,7 @@ function preInstall {
     exit
 }
 
-# Run logged as normal user
+# Log in as root
 function installSetup {
     echo "-------------------------------------------------"
     echo "       Setup Language to US and set locale       "
