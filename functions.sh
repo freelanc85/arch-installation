@@ -226,6 +226,7 @@ function installSoftware {
         'virtualbox'
         'virtualbox-host-modules-arch'
         'qt5-x11extras'
+        'qt5ct'
 
         # TERMINAL UTILITIES --------------------------------------------------
 
@@ -435,6 +436,9 @@ function finalSetup {
     # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
     echo 'XDG_CURRENT_DESKTOP=Unity' >> /etc/environment
     echo 'QT_QPA_PLATFORMTHEME=gtk2' >> /etc/environment
+
+    # VirtualBox theme fix
+    sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
 
     echo "\n
     ###############################################################################
