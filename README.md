@@ -26,7 +26,7 @@ sh 1_preInstallSetup.sh
 
 arch-chroot /mnt
 
-pacman -Syy git
+pacman -Syy git btrfs-progs
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 
