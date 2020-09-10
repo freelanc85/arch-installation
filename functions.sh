@@ -355,6 +355,7 @@ function installSoftwareAur {
         'materia-gtk-theme'             # Desktop Theme
         'papirus-icon-theme'            # Desktop Icons
         'capitaine-cursors'             # Cursor Themes
+        'qt5-styleplugins'
     )
 
 
@@ -413,7 +414,7 @@ function finalSetup {
     echo -e "\nSetting keymap on Xorg"
     sudo localectl set-x11-keymap $X11KEYMAP
     
-    echo "\n# Cleaning..."
+    echo "\n# Final steps..."
     # Remove no password sudo rights
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
@@ -427,6 +428,13 @@ function finalSetup {
     # VirtualBox Settings
     sudo modprobe vboxdrv
     sudo gpasswd -a $USER vboxusers
+
+    # Set ChrisTitusTech/material-awesome theme for awesome
+    git clone https://github.com/ChrisTitusTech/material-awesome.git $HOME/.config/awesome
+
+    # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
+    echo 'XDG_CURRENT_DESKTOP=Unity' >> /etc/environment
+    echo 'QT_QPA_PLATFORMTHEME=gtk2' >> /etc/environment
 
     echo "\n
     ###############################################################################

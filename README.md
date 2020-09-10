@@ -22,24 +22,18 @@ pacman -Syy git
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 
-sh 1-script.sh
+sh 1_preInstall.sh
 
 arch-chroot /mnt
 
 git clone https://github.com/fsimchen/ArchMatic
 cd ArchMatic
 
-sh 2-script.sh
-
-sh 3-script.sh
-
-sh 4-script.sh
-
-sh 5-script.sh
-
-sh 6-script.sh
-
-sh 7-script.sh
+sh 2_installSetup.sh
+sh 3_installBase.sh
+sh 4_installSoftware.sh
+sh 5_installSoftwareAur.sh
+sh 6_finalSetup.sh
 ```
 
 ### Don't just run these scripts. Examine them. Customize them. Create your own versions.
