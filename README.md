@@ -10,7 +10,7 @@ This README contains the steps I do to install and configure a fully-functional 
 
 First, setup the boot USB and boot arch live iso. 
 
-### Arch Live ISO (Pre-Install)
+### Arch Live ISO
 
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
