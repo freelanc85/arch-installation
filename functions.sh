@@ -121,7 +121,7 @@ function installSetup {
     sed -i "s/^#${LOCALE}/${LOCALE}/" /etc/locale.gen
     locale-gen
     echo LANG=$LANG >> /etc/locale.conf
-    printf "KEYMAP=${KEYMAP}\nFONT=ter-v32b\n" > /etc/vconsole.conf
+    echo -e "KEYMAP=${KEYMAP}\nFONT=ter-v32b\n" >> /etc/vconsole.conf
 
     systemctl enable systemd-timesyncd
     timedatectl --no-ask-password set-ntp 1
@@ -129,7 +129,7 @@ function installSetup {
 
     # Hostname
     hostnamectl --no-ask-password set-hostname $HOSTNAME
-    printf "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain arch\n" > /etc/hosts
+    echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain arch\n" >> /etc/hosts
 
     echo -e "\n-------------------------------------------------"
     echo "Setting up mirrors for optimal download"
@@ -313,7 +313,7 @@ function installSoftware {
     )
 
     for PKG in "${PKGS[@]}"; do
-        echo -e "INSTALLING: ${PKG}"
+        echo "INSTALLING: ${PKG}"
         sudo pacman -S "$PKG" --noconfirm --needed
     done
 
