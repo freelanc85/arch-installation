@@ -2,5 +2,8 @@
 source ./variables.sh
 source ./functions.sh
 
-# Run finalSetup
+# Run install
+installBase
+installSoftware
+installSoftwareAur
 finalSetup

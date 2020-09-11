@@ -14,46 +14,77 @@ First, setup the boot USB and boot arch live iso.
 
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
-Edit the variables.sh file with your data for the scripts use.
+You need to fork this git and edit the variables.sh file with your data for the scripts use.
 
+---
+
+Step 1
 ```bash
 pacman -Syy git
-
-git clone https://github.com/fsimchen/ArchMatic
-cd ArchMatic
-
-sh 1_preInstallSetup.sh
-
-arch-chroot /mnt
-
-pacman -Syy git btrfs-progs
-git clone https://github.com/fsimchen/ArchMatic
-cd ArchMatic
-
-sh 2_preInstall.sh
-reboot
-
-# Log in as root
-git clone https://github.com/fsimchen/ArchMatic
-cd ArchMatic
-sh 3_installSetup.sh
-exit
-
-# Log in as normal user now
-git clone https://github.com/fsimchen/ArchMatic
-cd ArchMatic
-sh 4_installBase.sh
-sh 5_installSoftware.sh
-sh 6_installSoftwareAur.sh
-sh 7_finalSetup.sh
 ```
-
+```bash
+git clone https://github.com/fsimchen/ArchMatic
+```
+```bash
+cd ArchMatic
+```
+```bash
+sh 1_preInstallSetup.sh
+```
+---
+Step 2
+```bash
+arch-chroot /mnt
+```
+```bash
+pacman -Syy git btrfs-progs
+```
+```bash
+git clone https://github.com/fsimchen/ArchMatic
+```
+```bash
+cd ArchMatic
+```
+```bash
+sh 2_preInstall.sh
+```
+```bash
+reboot
+```
+---
+Step 3 (Log in as root)
+```bash
+git clone https://github.com/fsimchen/ArchMatic
+```
+```bash
+cd ArchMatic
+```
+```bash
+sh 3_installSetup.sh
+```
+```bash
+exit
+```
+---
+Step 4 (Log in as normal user now)
+```bash
+git clone https://github.com/fsimchen/ArchMatic
+```
+```bash
+cd ArchMatic
+```
+```bash
+sh 4_install.sh
+```
+---
 ### Don't just run these scripts. Examine them. Customize them. Create your own versions.
 
 ---
 
 ### System Description
 This runs Awesome Window Manager with the base configuration from the Material-Awesome project <https://github.com/ChrisTitusTech/material-awesome>.
+
+---
 
 #### No Wifi
 
