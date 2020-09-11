@@ -8,9 +8,9 @@ function preInstallSetup {
     # enable ntp
     timedatectl set-ntp true
 
-    echo "-------------------------------------------------"
-    echo "Setting up mirrors for optimal download \n"
-    echo "-------------------------------------------------"
+    echo -e "\n-------------------------------------------------"
+    echo "Setting up mirrors for optimal download"
+    echo -e "-------------------------------------------------\n"
     reflector --latest 25 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Syy
 
@@ -18,7 +18,7 @@ function preInstallSetup {
     cfdisk $DISK
 
     # make filesystems
-    echo "\nCreating Filesystems...\n"
+    echo -e "\nCreating Filesystems...\n"
     mkfs.ext4 -L "BOOT" "${DISK}1"
     mkfs.btrfs -f -L "ROOT" "${DISK}2"
 
@@ -46,18 +46,18 @@ function preInstallSetup {
     mount -o nodatacow,subvol=@var "${DISK}2" /mnt/var
     mount "${DISK}1" /mnt/boot
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "----- Arch Install on Main Drive -----"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     pacstrap /mnt base base-devel linux linux-firmware --noconfirm --needed
     genfstab -U /mnt >> /mnt/etc/fstab
 }
 
 # Run logged as root
 function preInstall {
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "-- Swapfile  --"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     truncate -s 0 /swap/swapfile
     chattr +C /swap/swapfile
     btrfs property set /swap/swapfile compression none
@@ -76,46 +76,46 @@ function preInstall {
     pacman -S nano sudo amd-ucode btrfs-progs wget curl git grub grub-btrfs networkmanager dhclient --noconfirm --needed
     pacman -S network-manager-applet dialog os-prober mtools linux-headers reflector xdg-utils xdg-user-dirs --noconfirm --needed
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "-- Bootloader Setup  --"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
     grub-install --target=i386-pc ${DISK}
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "--          Network Setup           --"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     systemctl enable --now NetworkManager
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "--      Set Password for Root       --"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     echo "Enter password for root user: "
     passwd root
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "--   Set Password for Normal User   --"
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     echo "Enter password for normal user: "
     useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash $USER
     passwd $USER
 
     umount -R /mnt
 
-    echo "--------------------------------------"
+    echo -e "\n--------------------------------------"
     echo "--   SYSTEM READY FOR FIRST REBOOT    --"
     echo "Don’t forget to take out the live USB before powering on the system again."
-    echo "--------------------------------------"
+    echo -e "--------------------------------------\n"
     exit
 }
 
 # Log in as root
 function installSetup {
-    echo "-------------------------------------------------"
+    echo -e "\n-------------------------------------------------"
     echo "       Setup Language to US and set locale       "
-    echo "-------------------------------------------------"
+    echo -e "-------------------------------------------------\n"
     ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
     hwclock --systohc
     sed -i "s/^#${LOCALE}/${LOCALE}/" /etc/locale.gen
@@ -131,9 +131,9 @@ function installSetup {
     hostnamectl --no-ask-password set-hostname $HOSTNAME
     printf "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain arch\n" > /etc/hosts
 
-    echo "-------------------------------------------------"
+    echo -e "\n-------------------------------------------------"
     echo "Setting up mirrors for optimal download"
-    echo "-------------------------------------------------"
+    echo -e "-------------------------------------------------\n"
     reflector --latest 25 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
     # Add sudo rights
@@ -313,7 +313,7 @@ function installSoftware {
     )
 
     for PKG in "${PKGS[@]}"; do
-        echo "INSTALLING: ${PKG}"
+        echo -e "INSTALLING: ${PKG}"
         sudo pacman -S "$PKG" --noconfirm --needed
     done
 
@@ -417,7 +417,7 @@ function finalSetup {
     echo -e "\nSetting keymap on Xorg"
     sudo localectl set-x11-keymap $X11KEYMAP
     
-    echo "\n# Final steps..."
+    echo -e "\n# Final steps..."
     # Remove no password sudo rights
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
@@ -442,7 +442,7 @@ function finalSetup {
     # VirtualBox theme fix
     sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
 
-    echo "\n
+    echo -e "\n
     ###############################################################################
     # Done
     ###############################################################################
