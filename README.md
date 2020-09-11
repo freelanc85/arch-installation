@@ -1,4 +1,4 @@
-# Modified version of Titus ArchMatic Installer Script
+# fsimchen ArchMatic Installer Script
 
 <img src="https://i.imgur.com/Yn29sze.png" />
 
