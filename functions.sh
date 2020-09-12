@@ -19,11 +19,11 @@ function preInstallSetup {
 
     # make filesystems
     echo -e "\nCreating Filesystems...\n"
-    #mkfs.ext4 -L "BOOT" "${DISK}1"
-    mkfs.btrfs -f -L "ROOT" "${DISK}1"
+    mkfs.fat32 -L "BOOT" "${DISK}1"
+    mkfs.btrfs -f -L "ROOT" "${DISK}2"
 
     # create btrfs subvolumes
-    mount "${DISK}1" /mnt
+    mount "${DISK}2" /mnt
     btrfs su cr /mnt/@
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
@@ -33,15 +33,15 @@ function preInstallSetup {
     umount /mnt
     
     # mount btrfs subvolumes
-    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
+    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}2" /mnt
     mkdir /mnt/{home,.snapshots,tmp,var,swap}
-    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
-    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
-    #mount -o noatime,compress=lzo,space_cache,subvol=@tmp "${DISK}1" /mnt/tmp
-    mount -o nodatacow,subvol=@tmp "${DISK}1" /mnt/tmp
-    mount -o nodatacow,subvol=@var "${DISK}1" /mnt/var
-    mount -o nodatacow,subvol=@swap "${DISK}1" /mnt/swap
-    #mount "${DISK}1" /mnt/boot
+    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}2" /mnt/home
+    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}2" /mnt/.snapshots
+    #mount -o noatime,compress=lzo,space_cache,subvol=@tmp "${DISK}2" /mnt/tmp
+    mount -o nodatacow,subvol=@tmp "${DISK}2" /mnt/tmp
+    mount -o nodatacow,subvol=@var "${DISK}2" /mnt/var
+    mount -o nodatacow,subvol=@swap "${DISK}2" /mnt/swap
+    #mount "${DISK}2" /mnt/boot
 
     chattr +C /mnt/tmp/
     chattr +C /mnt/var/
@@ -434,8 +434,8 @@ function finalSetup {
     sudo modprobe vboxdrv
     sudo gpasswd -a $USER vboxusers
 
-    # Set ChrisTitusTech/material-awesome theme for awesome
-    git clone https://github.com/ChrisTitusTech/material-awesome.git $HOME/.config/awesome
+    # Set fsimchen/material-awesome theme for awesome
+    git clone https://github.com/fsimchen/material-awesome.git $HOME/.config/awesome
 
     # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
     echo 'XDG_CURRENT_DESKTOP=Unity' | sudo tee -a /etc/environment
@@ -443,6 +443,7 @@ function finalSetup {
 
     # VirtualBox theme fix
     sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
+    sudo cp /usr/share/applications/virtualbox.desktop $HOME/.local/share/applications/
 
     echo -e "\n
     ###############################################################################
