@@ -100,7 +100,7 @@ function preInstall {
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     read -s -n 1 -p "Press any key to continue . . ."
     echo ""
-    pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
+    pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
     read -s -n 1 -p "Press any key to continue . . ."
     echo ""
 
@@ -221,7 +221,7 @@ function installBase {
     )
 
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
+    sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
 }
 
 # Run logged as normal user
@@ -322,7 +322,7 @@ function installSoftware {
     )
 
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
+    sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
 }
 
 # Run logged as normal user
@@ -365,7 +365,7 @@ function installSoftwareAur {
         'qt5-styleplugins'
     )
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    yay -S --noconfirm "$(printf "%s " "${PKGS[@]}")"
+    yay -S --noconfirm $(printf "%s " "${PKGS[@]}")
 }
 
 # Run logged as normal user
