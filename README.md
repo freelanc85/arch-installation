@@ -20,6 +20,9 @@ You need to fork this git and edit the variables.sh file with your data for the 
 
 Step 1
 ```bash
+loadkeys br-abnt2
+```
+```bash
 pacman -Syy git --noconfirm --needed
 ```
 ```bash
@@ -56,6 +59,9 @@ reboot
 ```
 ---
 Step 3 (Log in as root)
+```bash
+loadkeys br-abnt2
+```
 ```bash
 git clone https://github.com/fsimchen/ArchMatic
 ```

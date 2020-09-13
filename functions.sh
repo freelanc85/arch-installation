@@ -2,8 +2,6 @@
 
 # Run logged as root
 function preInstallSetup {
-    echo "Setting keyboard..."
-    loadkeys $KEYBOARD
 
     echo "Setting NTP..."
     timedatectl set-ntp true
@@ -102,7 +100,7 @@ function preInstall {
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
 
-    echo "Setting bootloader  ..."
+    echo "Setting bootloader ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
     grub-install --target=i386-pc ${DISK}
@@ -289,6 +287,7 @@ function installSoftware {
         'veracrypt'             # Disc encryption utility
         'variety'               # Wallpaper changer
         'ttf-fira-code'
+        'qbittorrent'
 
         # DEVELOPMENT ---------------------------------------------------------
 
@@ -346,6 +345,7 @@ function installSoftwareAur {
         #'timeshift'
         #'timeshift-autosnap'
         'snapper-gui-git'
+        'etcher-bin'
         
         # MEDIA ---------------------------------------------------------------
         'screenkey'                 # Screencast your keypresses
