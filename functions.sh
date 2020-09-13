@@ -349,6 +349,7 @@ function installSoftwareAur {
         'snapper-gui-git'
         'etcher-bin'
         'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
+        'hunspell-pt-br'           # English spellcheck library
         
         # MEDIA ---------------------------------------------------------------
         'screenkey'                 # Screencast your keypresses
