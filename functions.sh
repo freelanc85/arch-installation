@@ -2,27 +2,24 @@
 
 # Run logged as root
 function preInstallSetup {
-    # set keyboard
+    echo "Setting keyboard..."
     loadkeys $KEYBOARD
 
-    # enable ntp
+    echo "Setting NTP..."
     timedatectl set-ntp true
 
-    echo -e "\n-------------------------------------------------"
-    echo "Setting up mirrors for optimal download"
-    echo -e "-------------------------------------------------\n"
-    reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
+    echo "Setting pacman mirrorlist..."
+    reflector -c "United States" -f 25 --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Syy
 
-    # disk prep
+    echo "Setting disk partitions..."
     cfdisk $DISK
 
-    # make filesystems
-    echo -e "\nCreating Filesystems...\n"
+    echo "Setting filesystem..."
     #mkfs.fat32 -L "BOOT" "${DISK}1"
     mkfs.btrfs -f -L "ROOT" "${DISK}1"
 
-    # create btrfs subvolumes
+    echo "Setting btrfs subvolumes..."
     mount "${DISK}1" /mnt
 
     btrfs su cr /mnt/@
@@ -33,25 +30,24 @@ function preInstallSetup {
     btrfs su cr /mnt/@tmp
     btrfs su cr /mnt/@swap
     btrfs su cr /mnt/@.snapshots
+
     umount /mnt
 
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
+    #read -s -n 1 -p "Press any key to continue . . ."
+    #echo ""
     
-    # mount rooot subvolume
+    # Mount root subvolume
     mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
 
     # Create dirs for subvolumes
     mkdir /mnt/{boot,srv,home,.snapshots,tmp,var,swap}
     mkdir /mnt/boot/grub
     
-    # mount subvolumes with data copy on right
+    # Mount subvolumes
     mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
     mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub
     mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
     mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
-
-    # mount subvolumes no data copy on right
     mount -o nodatacow,subvol=@tmp "${DISK}1" /mnt/tmp
     mount -o nodatacow,subvol=@var "${DISK}1" /mnt/var
     mount -o nodatacow,subvol=@swap "${DISK}1" /mnt/swap
@@ -59,21 +55,14 @@ function preInstallSetup {
     chattr +C /mnt/tmp/
     chattr +C /mnt/var/
 
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
-
-    echo -e "\n--------------------------------------"
-    echo "----- Arch Install on Main Drive -----"
-    echo -e "--------------------------------------\n"
+    echo "Installing base packages ..."
     pacstrap /mnt base base-devel linux linux-firmware --noconfirm --needed
     genfstab -U /mnt >> /mnt/etc/fstab
 }
 
 # Run logged as root
 function preInstall {
-    echo -e "\n--------------------------------------"
-    echo "-- Swapfile  --"
-    echo -e "--------------------------------------\n"
+    echo "Setting swapfile  ..."
     truncate -s 0 /swap/swapfile
     chattr +C /swap/swapfile
     btrfs property set /swap/swapfile compression none
@@ -83,18 +72,37 @@ function preInstall {
     swapon /swap/swapfile
     echo '/swap/swapfile none swap defaults 0 0' >> /etc/fstab
 
-    # enable multilib
+    echo "Enabling multilib  ..."
     sed -i 's/^\(#\[multilib\]\)/\[multilib\]/' /etc/pacman.conf
     sed -i '/^\[multilib\]/{n;s/^#//}' /etc/pacman.conf
     pacman -Syy
 
-    # Base pkgs
-    pacman -S nano sudo amd-ucode btrfs-progs wget curl git grub grub-btrfs networkmanager dhclient --noconfirm --needed
-    pacman -S network-manager-applet dialog os-prober mtools linux-headers reflector xdg-utils xdg-user-dirs --noconfirm --needed
+    echo "Installing needed packages ..."
+    PKGS=(
+        'nano'
+        'sudo'
+        'amd-ucode'
+        'btrfs-progs'
+        'wget'
+        'curl'
+        'git'
+        'grub'
+        'grub-btrfs'
+        'networkmanager'
+        'dhclient'
+        'network-manager-applet'
+        'dialog'
+        'os-prober'
+        'mtools'
+        'linux-headers'
+        'reflector'
+        'xdg-utils'
+        'xdg-user-dirs'
+    )
+    echo "Packages: $(printf "%s " "${PKGS[@]}")"
+    pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
 
-    echo -e "\n--------------------------------------"
-    echo "-- Bootloader Setup  --"
-    echo -e "--------------------------------------\n"
+    echo "Setting bootloader  ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
     grub-install --target=i386-pc ${DISK}
@@ -104,30 +112,20 @@ function preInstall {
     
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    echo -e "\n--------------------------------------"
-    echo "--          Network Setup           --"
-    echo -e "--------------------------------------\n"
+    echo "Setting network ..."
     systemctl enable --now NetworkManager
 
-    echo -e "\n--------------------------------------"
-    echo "--      Set Password for Root       --"
-    echo -e "--------------------------------------\n"
-    echo "Enter password for root user: "
+    echo "Enter new password for root: "
     passwd root
 
-    echo -e "\n--------------------------------------"
-    echo "--   Set Password for Normal User   --"
-    echo -e "--------------------------------------\n"
-    echo "Enter password for normal user: "
+    echo "Enter new password for ${USER}: "
     useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash $USER
     passwd $USER
 
     umount -R /mnt
 
-    echo -e "\n--------------------------------------"
-    echo "--   SYSTEM READY FOR FIRST REBOOT    --"
+    echo  -e "\nSYSTEM READY FOR FIRST REBOOT"
     echo "Don’t forget to take out the live USB before powering on the system again."
-    echo -e "--------------------------------------\n"
     exit
 }
 
@@ -140,9 +138,7 @@ function installSetup {
     # Add sudo no password rights
     sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
-    echo -e "\n-------------------------------------------------"
-    echo "       Setup Language and Locale       "
-    echo -e "-------------------------------------------------\n"
+    echo "Setting language and locale ..."
     ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
     hwclock --systohc
     sed -i "s/^#${LOCALE}/${LOCALE}/" /etc/locale.gen
@@ -158,18 +154,15 @@ function installSetup {
     hostnamectl --no-ask-password set-hostname $HOSTNAME
     echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain arch\n" >> /etc/hosts
 
-    echo -e "\n-------------------------------------------------"
-    echo "Setting up mirrors for optimal download"
-    echo -e "-------------------------------------------------\n"
-    reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
+    echo "Setting mirrorlist ..."
+    reflector -c "United States" -f 25 --sort rate --save /etc/pacman.d/mirrorlist
 }
 
 # Run logged as normal user
 function installBase {
-    echo -e "\nInstalling Base System\n"
+    echo "Installing desktop packages ..."
 
     PKGS=(
-
         # --- XORG Display Rendering
             'xorg'                  # Base Package
             'xorg-drivers'          # Display Drivers 
@@ -225,22 +218,13 @@ function installBase {
             'system-config-printer' # Printer setup  utility
     )
 
-    #for PKG in "${PKGS[@]}"; do
-        #echo "INSTALLING: ${PKG}"
-        #sudo pacman -S "$PKG" --noconfirm --needed
-    #done
-
-    echo "INSTALLING: $(printf "%s " "${PKGS[@]}")"
+    echo "Packages: $(printf "%s " "${PKGS[@]}")"
     sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
-
-    
-
-    echo -e "\nDone!\n"
 }
 
 # Run logged as normal user
 function installSoftware {
-    echo -e "\nINSTALLING SOFTWARE\n"
+    echo "Installing user selected packages ..."
 
     PKGS=(
         # SYSTEM --------------------------------------------------------------
@@ -334,31 +318,22 @@ function installSoftware {
 
     )
 
-    #for PKG in "${PKGS[@]}"; do
-        #echo "INSTALLING: ${PKG}"
-        #sudo pacman -S "$PKG" --noconfirm --needed
-    #done
-
-    echo "INSTALLING: $(printf "%s " "${PKGS[@]}")"
+    echo "Packages: $(printf "%s " "${PKGS[@]}")"
     sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
-
-    echo -e "\nDone!\n"
 }
 
 # Run logged as normal user
 function installSoftwareAur {
-    echo -e "\nINSTALLING AUR SOFTWARE\n"
 
+    echo "Installing YAY ..."
     cd "${HOME}"
-
-    echo "CLOING: YAY"
     git clone "https://aur.archlinux.org/yay.git"
+    cd ${HOME}/yay
+    makepkg -si --noconfirm
 
-
+    echo "Installing AUR packages ..."
     PKGS=(
-
         # UTILITIES -----------------------------------------------------------
-
         'i3lock-fancy'              # Screen locker
         'freeoffice'                # Office Alternative
         'corectrl'
@@ -373,103 +348,74 @@ function installSoftwareAur {
         'snapper-gui-git'
         
         # MEDIA ---------------------------------------------------------------
-
         'screenkey'                 # Screencast your keypresses
         'lbry-app-bin'              # LBRY Linux Application
 
         # COMMUNICATIONS ------------------------------------------------------
-
         'firefox'
 
         # THEMES --------------------------------------------------------------
-
         'materia-gtk-theme'             # Desktop Theme
         'papirus-icon-theme'            # Desktop Icons
         'capitaine-cursors'             # Cursor Themes
         'qt5-styleplugins'
     )
-
-
-    cd ${HOME}/yay
-    makepkg -si --noconfirm
-
-    #for PKG in "${PKGS[@]}"; do
-        #yay -S --noconfirm $PKG
-    #done
-
+    echo "Packages: $(printf "%s " "${PKGS[@]}")"
     yay -S --noconfirm "$(printf "%s " "${PKGS[@]}")"
-
-    echo -e "\nDone!\n"
 }
 
 # Run logged as normal user
 function finalSetup {
-    echo -e "\nFINAL SETUP AND CONFIGURATION"
-    echo -e "\nDisabling buggy cursor inheritance"
-
+    echo "FINAL SETUP AND CONFIGURATION"
+    
+    echo -e "\nDisabling buggy cursor inheritance ..."
     # When you boot with multiple monitors the cursor can look huge. This fixes it.
     echo '[Icon Theme]' | sudo tee /usr/share/icons/default/index.theme
     echo '#Inherits=Theme' | sudo tee -a /usr/share/icons/default/index.theme
 
-    # ------------------------------------------------------------------------
-
-    echo -e "\nIncreasing file watcher count"
-
+    echo "Increasing file watcher count ..."
     # This prevents a "too many files" error in Visual Studio Code
     echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system
 
-    # ------------------------------------------------------------------------
-
-    echo -e "\nDisabling Pulse .esd_auth module"
-
+    echo "Disabling module-esound-protocol-unix ..."
     # Pulse audio loads the `esound-protocol` module, which best I can tell is rarely needed.
     # That module creates a file called `.esd_auth` in the home directory which I'd prefer to not be there. So...
     sudo sed -i 's|load-module module-esound-protocol-unix|#load-module module-esound-protocol-unix|g' /etc/pulse/default.pa
 
-    # ------------------------------------------------------------------------
-
-    echo -e "\nEnabling Login Display Manager"
-
-    sudo systemctl enable lightdm.service
-
-    # ------------------------------------------------------------------------
-    echo -e "\nEnabling bluetooth daemon and setting it to auto-start"
+    echo "Setting bluetooth ..."
     sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
+
+    echo "Enabling systemctl daemons ..."
+    sudo systemctl enable lightdm.service
     sudo systemctl enable --now bluetooth.service
-    # ------------------------------------------------------------------------
-
-    echo -e "\nEnabling the cups service daemon so we can print"
-
-    systemctl enable --now org.cups.cupsd.service
+    sudo systemctl enable --now org.cups.cupsd.service
     sudo systemctl enable --now ntpd.service
     sudo systemctl enable --now NetworkManager.service
 
-    echo -e "\nSetting keymap on Xorg"
+    echo "Setting keymap on Xorg ..."
     sudo localectl set-x11-keymap $X11KEYMAP
 
-    # Change the radeon driver with amdgpu for old hardware
+    echo "Setting the amdgpu driver on grub..."
     sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 |g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
-
-    # Eliminate Tearing
     sudo sed -i 's|EndSection|        Option "TearFree" "on"\nEndSection|g' /usr/share/X11/xorg.conf.d/10-amdgpu.conf
 
-    # VirtualBox Settings
+    echo "Setting VirtualBox ..."
     sudo modprobe vboxdrv
     sudo gpasswd -a $USER vboxusers
 
-    # Set fsimchen/material-awesome theme for awesome
+    # VirtualBox theme fix
+    sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
+    sudo mkdir $HOME/.local/share/applications/
+    sudo cp /usr/share/applications/virtualbox.desktop $HOME/.local/share/applications/
+
+    echo "Setting theme for AwesomeWM ..."
     git clone https://github.com/fsimchen/material-awesome.git $HOME/.config/awesome
 
     # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
     echo -e "XDG_CURRENT_DESKTOP=Unity\nQT_QPA_PLATFORMTHEME=gtk2" | sudo tee -a /etc/environment
 
-    # VirtualBox theme fix
-    sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
-    sudo cp /usr/share/applications/virtualbox.desktop $HOME/.local/share/applications/
-
-    echo -e "\nSnapper configurations..."
-
+    echo "Setting Snapper ..."
     # Unmounting and removing the snapshots directory:
     sudo umount /.snapshots/
     sudo rm -rf /.snapshots/
@@ -514,12 +460,7 @@ function finalSetup {
     #echo 'Exec = /usr/bin/rsync -a --delete /boot /.bootbackup' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
 
     echo -e "\nRemove no password sudo rights..."
-    # Remove no password sudo rights
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
-    echo -e "\n
-    ###############################################################################
-    # Done
-    ###############################################################################
-    "
+    echo -e "\nInstallation Complete!"
 }
