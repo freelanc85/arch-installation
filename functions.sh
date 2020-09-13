@@ -98,7 +98,11 @@ function preInstall {
         'xdg-user-dirs'
     )
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
+    read -s -n 1 -p "Press any key to continue . . ."
+    echo ""
     pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
+    read -s -n 1 -p "Press any key to continue . . ."
+    echo ""
 
     echo "Setting bootloader ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
@@ -110,8 +114,8 @@ function preInstall {
     
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    echo "Setting network ..."
-    systemctl enable --now NetworkManager
+    #echo "Setting network ..."
+    #systemctl enable --now NetworkManager.service
 
     echo "Enter new password for root: "
     passwd root
