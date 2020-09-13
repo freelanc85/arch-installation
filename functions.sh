@@ -22,14 +22,11 @@ function preInstallSetup {
     #mkfs.fat32 -L "BOOT" "${DISK}1"
     mkfs.btrfs -f -L "ROOT" "${DISK}1"
 
-
-    mkdir /mnt/@boot
-    mkdir /mnt/@boot/grub
-
     # create btrfs subvolumes
     mount "${DISK}1" /mnt
+
     btrfs su cr /mnt/@
-    btrfs su cr /mnt/@boot/grub/i386-pc
+    btrfs su cr /mnt/@grub
     btrfs su cr /mnt/@srv
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
@@ -47,9 +44,9 @@ function preInstallSetup {
     # mount subvolumes with data copy on right
     mkdir /mnt/{boot,srv,home,.snapshots,tmp,var,swap}
     mkdir /mnt/boot/grub
-    mkdir /mnt/boot/grub/i386-pc
+    
     mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
-    mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub/i386-pc
+    mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub
     mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
     mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
 
@@ -100,6 +97,7 @@ function preInstall {
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
     grub-install --target=i386-pc ${DISK}
+    sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
     grub-mkconfig -o /boot/grub/grub.cfg
 
     echo -e "\n--------------------------------------"
