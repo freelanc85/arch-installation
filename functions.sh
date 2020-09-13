@@ -141,7 +141,7 @@ function installSetup {
     sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
     echo -e "\n-------------------------------------------------"
-    echo "       Setup Language to US and set locale       "
+    echo "       Setup Language and Locale       "
     echo -e "-------------------------------------------------\n"
     ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
     hwclock --systohc
@@ -225,10 +225,15 @@ function installBase {
             'system-config-printer' # Printer setup  utility
     )
 
-    for PKG in "${PKGS[@]}"; do
-        echo "INSTALLING: ${PKG}"
-        sudo pacman -S "$PKG" --noconfirm --needed
-    done
+    #for PKG in "${PKGS[@]}"; do
+        #echo "INSTALLING: ${PKG}"
+        #sudo pacman -S "$PKG" --noconfirm --needed
+    #done
+
+    echo "INSTALLING: $(printf "%s " "${PKGS[@]}")"
+    sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
+
+    
 
     echo -e "\nDone!\n"
 }
@@ -329,10 +334,13 @@ function installSoftware {
 
     )
 
-    for PKG in "${PKGS[@]}"; do
-        echo "INSTALLING: ${PKG}"
-        sudo pacman -S "$PKG" --noconfirm --needed
-    done
+    #for PKG in "${PKGS[@]}"; do
+        #echo "INSTALLING: ${PKG}"
+        #sudo pacman -S "$PKG" --noconfirm --needed
+    #done
+
+    echo "INSTALLING: $(printf "%s " "${PKGS[@]}")"
+    sudo pacman -S "$(printf "%s " "${PKGS[@]}")" --noconfirm --needed
 
     echo -e "\nDone!\n"
 }
@@ -385,9 +393,11 @@ function installSoftwareAur {
     cd ${HOME}/yay
     makepkg -si --noconfirm
 
-    for PKG in "${PKGS[@]}"; do
-        yay -S --noconfirm $PKG
-    done
+    #for PKG in "${PKGS[@]}"; do
+        #yay -S --noconfirm $PKG
+    #done
+
+    yay -S --noconfirm "$(printf "%s " "${PKGS[@]}")"
 
     echo -e "\nDone!\n"
 }
