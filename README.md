@@ -1,4 +1,4 @@
-# fsimchen Arch Linus Installer Script
+# fsimchen Arch Linux Installer Script
 # With BTRFS and Snapper
 
 <img src="https://i.imgur.com/Yn29sze.png" />
