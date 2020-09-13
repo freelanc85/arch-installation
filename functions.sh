@@ -98,11 +98,7 @@ function preInstall {
         'xdg-user-dirs'
     )
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
     pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
 
     echo "Setting bootloader ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
@@ -207,7 +203,6 @@ function installBase {
         # --- Bluetooth
             'bluez'                 # Daemons for the bluetooth protocol stack
             'bluez-utils'           # Bluetooth development and debugging utilities
-            'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
             'blueberry'             # Bluetooth configuration tool
             'pulseaudio-bluetooth'  # Bluetooth support for PulseAudio
         
@@ -350,6 +345,7 @@ function installSoftwareAur {
         #'timeshift-autosnap'
         'snapper-gui-git'
         'etcher-bin'
+        'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
         
         # MEDIA ---------------------------------------------------------------
         'screenkey'                 # Screencast your keypresses
