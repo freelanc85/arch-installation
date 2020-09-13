@@ -114,8 +114,8 @@ function preInstall {
     
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    #echo "Setting network ..."
-    #systemctl enable --now NetworkManager.service
+    echo "Setting network ..."
+    systemctl enable --now NetworkManager
 
     echo "Enter new password for root: "
     passwd root
