@@ -49,6 +49,9 @@ cd ArchMatic
 sh 2_preInstall.sh
 ```
 ```bash
+exit
+```
+```bash
 reboot
 ```
 ---
