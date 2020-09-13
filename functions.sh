@@ -25,7 +25,7 @@ function preInstallSetup {
     # create btrfs subvolumes
     mount "${DISK}1" /mnt
     btrfs su cr /mnt/@
-    btrfs su cr /mnt/@boot/grub/i386-pc
+    btrfs su cr /mnt/@grub
     btrfs su cr /mnt/@srv
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
@@ -42,7 +42,7 @@ function preInstallSetup {
     mkdir /mnt/boot/grub
     mkdir /mnt/boot/grub/i386-pc
     mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
-    mount -o noatime,compress=lzo,space_cache,subvol=@boot/grub/i386-pc "${DISK}1" /mnt/boot/grub/i386-pc
+    mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub/i386-pc
     mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
     mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
 
