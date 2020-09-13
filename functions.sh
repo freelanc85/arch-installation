@@ -150,7 +150,7 @@ function installSetup {
 
     # Hostname
     hostnamectl --no-ask-password set-hostname $HOSTNAME
-    echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain arch\n" >> /etc/hosts
+    echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}\n" >> /etc/hosts
 
     echo "Setting mirrorlist ..."
     reflector -c "United States" -f 25 --sort rate --save /etc/pacman.d/mirrorlist
