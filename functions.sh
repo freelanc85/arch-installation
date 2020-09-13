@@ -19,12 +19,14 @@ function preInstallSetup {
 
     # make filesystems
     echo -e "\nCreating Filesystems...\n"
-    mkfs.fat32 -L "BOOT" "${DISK}1"
-    mkfs.btrfs -f -L "ROOT" "${DISK}2"
+    #mkfs.fat32 -L "BOOT" "${DISK}1"
+    mkfs.btrfs -f -L "ROOT" "${DISK}1"
 
     # create btrfs subvolumes
-    mount "${DISK}2" /mnt
+    mount "${DISK}1" /mnt
     btrfs su cr /mnt/@
+    btrfs su cr /mnt/@boot/grub/i386-pc
+    btrfs su cr /mnt/@srv
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
     btrfs su cr /mnt/@tmp
@@ -32,16 +34,22 @@ function preInstallSetup {
     btrfs su cr /mnt/@.snapshots
     umount /mnt
     
-    # mount btrfs subvolumes
-    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}2" /mnt
-    mkdir /mnt/{home,.snapshots,tmp,var,swap}
-    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}2" /mnt/home
-    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}2" /mnt/.snapshots
-    #mount -o noatime,compress=lzo,space_cache,subvol=@tmp "${DISK}2" /mnt/tmp
-    mount -o nodatacow,subvol=@tmp "${DISK}2" /mnt/tmp
-    mount -o nodatacow,subvol=@var "${DISK}2" /mnt/var
-    mount -o nodatacow,subvol=@swap "${DISK}2" /mnt/swap
-    #mount "${DISK}2" /mnt/boot
+    # mount rooot subvolume
+    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
+
+    # mount subvolumes with data copy on right
+    mkdir /mnt/{boot,srv,home,.snapshots,tmp,var,swap}
+    mkdir /mnt/boot/grub
+    mkdir /mnt/boot/grub/i386-pc
+    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
+    mount -o noatime,compress=lzo,space_cache,subvol=@boot/grub/i386-pc "${DISK}1" /mnt/boot/grub/i386-pc
+    mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
+    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
+
+    # mount subvolumes no data copy on right
+    mount -o nodatacow,subvol=@tmp "${DISK}1" /mnt/tmp
+    mount -o nodatacow,subvol=@var "${DISK}1" /mnt/var
+    mount -o nodatacow,subvol=@swap "${DISK}1" /mnt/swap
 
     chattr +C /mnt/tmp/
     chattr +C /mnt/var/
@@ -226,6 +234,7 @@ function installSoftware {
         'virtualbox-host-modules-arch'
         'qt5-x11extras'
         'qt5ct'
+        'snapper'
 
         # TERMINAL UTILITIES --------------------------------------------------
 
@@ -343,8 +352,9 @@ function installSoftwareAur {
         'pnmixer'                   # System tray volume control
         'xfce4-mixer'
         'nitrogen'
-        'timeshift'
-        'timeshift-autosnap'
+        #'timeshift'
+        #'timeshift-autosnap'
+        'snapper-gui-git'
         
         # MEDIA ---------------------------------------------------------------
 
@@ -444,6 +454,51 @@ function finalSetup {
     # VirtualBox theme fix
     sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
     sudo cp /usr/share/applications/virtualbox.desktop $HOME/.local/share/applications/
+
+    echo -e "\nSnapper configurations..."
+
+    # Unmounting and removing the snapshots directory:
+    sudo umount /.snapshots/
+    sudo rm -rf /.snapshots/
+    
+    # /etc/snapper/configs/root
+    sudo snapper -c root create-config /
+    sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/root
+
+    # /etc/snapper/configs/home
+    sudo snapper -c home create-config /home
+    sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/home
+
+    # /etc/snapper/configs/srv
+    sudo snapper -c srv create-config /srv
+    sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/srv
+
+    # /etc/snapper/configs/grub
+    sudo snapper -c grub create-config /boot/grub/i386-pc
+    sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/grub
+
+    # Starting and enabling the timers:
+    sudo systecmtl start snapper-timeline.time
+    sudo systemctl enable snapper-timeline.timer
+    sudo systemctl start snapper-cleanup.timer
+    sudo systemctl enable snapper-cleanup.timer
+
+    # Starting and enabling the grub-btrfs service:
+    sudo systemctl start grub-btrfs.path
+    sudo systemctl enable grub-btrfs.path
+
+    #  Hooks
+    #echo '[Trigger]' | sudo tee /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Operation = Upgrade' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Operation = Install' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Operation = Remove' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Type = Package' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo -e "Target = linux*\n" | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo '[Action]' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Depends = rsync' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Description = Backing up /boot...' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'When = PreTransaction' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+    #echo 'Exec = /usr/bin/rsync -a --delete /boot /.bootbackup' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
 
     echo -e "\n
     ###############################################################################
