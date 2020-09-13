@@ -486,7 +486,7 @@ function finalSetup {
     sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/srv
 
     # /etc/snapper/configs/grub
-    sudo snapper -c grub create-config /boot/grub/i386-pc
+    sudo snapper -c grub create-config /boot/grub
     sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/grub
 
     # Starting and enabling the timers:
