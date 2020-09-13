@@ -460,8 +460,7 @@ function finalSetup {
     git clone https://github.com/fsimchen/material-awesome.git $HOME/.config/awesome
 
     # Same theme for Qt/KDE applications and GTK applications, and fix missing indicators
-    echo 'XDG_CURRENT_DESKTOP=Unity' | sudo tee -a /etc/environment
-    echo 'QT_QPA_PLATFORMTHEME=gtk2' | sudo tee -a /etc/environment
+    echo -e "XDG_CURRENT_DESKTOP=Unity\nQT_QPA_PLATFORMTHEME=gtk2" | sudo tee -a /etc/environment
 
     # VirtualBox theme fix
     sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
