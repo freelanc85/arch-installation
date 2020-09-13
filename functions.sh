@@ -315,7 +315,7 @@ function installSoftware {
         # PRODUCTIVITY --------------------------------------------------------
 
         'hunspell'              # Spellcheck libraries
-        'hunspell-en'           # English spellcheck library
+        'hunspell-en_US'           # English spellcheck library
         'xpdf'                  # PDF viewer
 
     )
@@ -339,7 +339,6 @@ function installSoftwareAur {
     PKGS=(
         # UTILITIES -----------------------------------------------------------
         'i3lock-fancy'              # Screen locker
-        'freeoffice'                # Office Alternative
         'corectrl'
         'pamac-aur-git'
         'visual-studio-code-bin'
@@ -347,8 +346,6 @@ function installSoftwareAur {
         'pnmixer'                   # System tray volume control
         'xfce4-mixer'
         'nitrogen'
-        #'timeshift'
-        #'timeshift-autosnap'
         'snapper-gui-git'
         'etcher-bin'
         'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
