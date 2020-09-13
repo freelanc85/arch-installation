@@ -11,8 +11,8 @@ function preInstallSetup {
     echo -e "\n-------------------------------------------------"
     echo "Setting up mirrors for optimal download"
     echo -e "-------------------------------------------------\n"
-    #reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
-    #pacman -Syy
+    reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
+    pacman -Syy
 
     # disk prep
     cfdisk $DISK
