@@ -1,4 +1,5 @@
-# fsimchen ArchMatic Installer Script
+# fsimchen Arch Linus Installer Script
+# With BTRFS and Snapper
 
 <img src="https://i.imgur.com/Yn29sze.png" />
 
