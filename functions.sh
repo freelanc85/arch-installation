@@ -100,7 +100,7 @@ function preInstall {
     grub-install --target=i386-pc ${DISK}
 
     # Activate grub flag to boot on btrf subvolume
-    sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
+    sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
     
     grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -133,6 +133,13 @@ function preInstall {
 
 # Log in as root
 function installSetup {
+
+    # Add sudo rights
+    sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+
+    # Add sudo no password rights
+    sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+
     echo -e "\n-------------------------------------------------"
     echo "       Setup Language to US and set locale       "
     echo -e "-------------------------------------------------\n"
@@ -155,13 +162,6 @@ function installSetup {
     echo "Setting up mirrors for optimal download"
     echo -e "-------------------------------------------------\n"
     reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
-
-    # Add sudo rights
-    sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
-
-    # Add sudo no password rights
-    sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-
 }
 
 # Run logged as normal user
@@ -238,10 +238,7 @@ function installSoftware {
     echo -e "\nINSTALLING SOFTWARE\n"
 
     PKGS=(
-
         # SYSTEM --------------------------------------------------------------
-
-        #'linux-lts'             # Long term support kernel
         'virtualbox'
         'virtualbox-host-modules-arch'
         'qt5-x11extras'
@@ -249,7 +246,6 @@ function installSoftware {
         'snapper'
 
         # TERMINAL UTILITIES --------------------------------------------------
-
         'bash-completion'       # Tab completion for Bash
         'bleachbit'             # File deletion utility
         'cronie'                # cron jobs
@@ -387,7 +383,7 @@ function installSoftwareAur {
 
 
     cd ${HOME}/yay
-    makepkg -si
+    makepkg -si --noconfirm
 
     for PKG in "${PKGS[@]}"; do
         yay -S --noconfirm $PKG
@@ -440,10 +436,6 @@ function finalSetup {
 
     echo -e "\nSetting keymap on Xorg"
     sudo localectl set-x11-keymap $X11KEYMAP
-    
-    echo -e "\n# Final steps..."
-    # Remove no password sudo rights
-    sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
     # Change the radeon driver with amdgpu for old hardware
     sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 |g' /etc/default/grub
@@ -510,6 +502,10 @@ function finalSetup {
     #echo 'Description = Backing up /boot...' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
     #echo 'When = PreTransaction' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
     #echo 'Exec = /usr/bin/rsync -a --delete /boot /.bootbackup' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+
+    echo -e "\nRemove no password sudo rights..."
+    # Remove no password sudo rights
+    sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
     echo -e "\n
     ###############################################################################

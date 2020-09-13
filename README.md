@@ -20,7 +20,7 @@ You need to fork this git and edit the variables.sh file with your data for the 
 
 Step 1
 ```bash
-pacman -Syy git
+pacman -Syy git --noconfirm --needed
 ```
 ```bash
 git clone https://github.com/fsimchen/ArchMatic
@@ -37,7 +37,7 @@ Step 2
 arch-chroot /mnt
 ```
 ```bash
-pacman -Syy git btrfs-progs
+pacman -Syy git btrfs-progs --noconfirm --needed
 ```
 ```bash
 git clone https://github.com/fsimchen/ArchMatic
