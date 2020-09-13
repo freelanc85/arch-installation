@@ -41,10 +41,11 @@ function preInstallSetup {
     # mount rooot subvolume
     mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
 
-    # mount subvolumes with data copy on right
+    # Create dirs for subvolumes
     mkdir /mnt/{boot,srv,home,.snapshots,tmp,var,swap}
     mkdir /mnt/boot/grub
     
+    # mount subvolumes with data copy on right
     mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
     mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub
     mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
@@ -97,7 +98,10 @@ function preInstall {
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
     grub-install --target=i386-pc ${DISK}
+
+    # Activate grub flag to boot on btrf subvolume
     sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
+    
     grub-mkconfig -o /boot/grub/grub.cfg
 
     echo -e "\n--------------------------------------"
