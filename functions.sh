@@ -11,8 +11,8 @@ function preInstallSetup {
     echo -e "\n-------------------------------------------------"
     echo "Setting up mirrors for optimal download"
     echo -e "-------------------------------------------------\n"
-    reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
-    pacman -Syy
+    #reflector -c "United States" -f 5 --sort rate --save /etc/pacman.d/mirrorlist
+    #pacman -Syy
 
     # disk prep
     cfdisk $DISK
@@ -22,10 +22,14 @@ function preInstallSetup {
     #mkfs.fat32 -L "BOOT" "${DISK}1"
     mkfs.btrfs -f -L "ROOT" "${DISK}1"
 
+
+    mkdir /mnt/@boot
+    mkdir /mnt/@boot/grub
+
     # create btrfs subvolumes
     mount "${DISK}1" /mnt
     btrfs su cr /mnt/@
-    btrfs su cr /mnt/@grub
+    btrfs su cr /mnt/@boot/grub/i386-pc
     btrfs su cr /mnt/@srv
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
@@ -33,6 +37,9 @@ function preInstallSetup {
     btrfs su cr /mnt/@swap
     btrfs su cr /mnt/@.snapshots
     umount /mnt
+
+    read -s -n 1 -p "Press any key to continue . . ."
+    echo ""
     
     # mount rooot subvolume
     mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
@@ -53,6 +60,9 @@ function preInstallSetup {
 
     chattr +C /mnt/tmp/
     chattr +C /mnt/var/
+
+    read -s -n 1 -p "Press any key to continue . . ."
+    echo ""
 
     echo -e "\n--------------------------------------"
     echo "----- Arch Install on Main Drive -----"
