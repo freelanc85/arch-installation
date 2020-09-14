@@ -1,5 +1,5 @@
 # fsimchen Arch Linux Installer Script
-# With BTRFS and Snapper
+# With BTRFS and Snapper, on a DOS/MBR disk partition
 
 <img src="https://i.imgur.com/Yn29sze.png" />
 
@@ -16,6 +16,8 @@ First, setup the boot USB and boot arch live iso.
 This step installs arch to your hard drive. *IT WILL FORMAT THE DISK*
 
 You need to fork this git and edit the variables.sh file with your data for the scripts use.
+
+When cfdisk open, select DOS, delete all partitions on the disk and create only one new, whole disk.
 
 ---
 
