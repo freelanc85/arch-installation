@@ -23197,7 +23197,6 @@ Resolving deltas: 100% (692/692), done.
 XDG_CURRENT_DESKTOP=Unity
 QT_QPA_PLATFORMTHEME=gtk2
 Setting Snapper ...
-sudo: systecmtl: command not found
 
 Created symlink /etc/systemd/system/timers.target.wants/snapper-timeline.timer → /usr/lib/systemd/system/snapper-timeline.timer.
 Created symlink /etc/systemd/system/timers.target.wants/snapper-cleanup.timer → /usr/lib/systemd/system/snapper-cleanup.timer.
