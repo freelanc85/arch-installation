@@ -181,6 +181,7 @@ function installBase {
             'gnome-keyring'         # Elevate Applications
             'lxappearance'          # Set System Themes
             'arandr'
+            'redshift'
 
         # --- Login Display Manager
             'lightdm'                   # Base Login Manager
