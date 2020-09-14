@@ -443,7 +443,7 @@ function finalSetup {
     sudo sed -i 's|ALLOW_USERS=""|ALLOW_USERS="'$USER'"|g' /etc/snapper/configs/grub
 
     # Starting and enabling the timers:
-    sudo systecmtl start snapper-timeline.time
+    sudo systemctl start snapper-timeline.time
     sudo systemctl enable snapper-timeline.timer
     sudo systemctl start snapper-cleanup.timer
     sudo systemctl enable snapper-cleanup.timer
