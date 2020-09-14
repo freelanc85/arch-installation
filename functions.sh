@@ -122,8 +122,6 @@ function preInstall {
     useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash $USER
     passwd $USER
 
-    umount -R /mnt
-
     echo  -e "\nSYSTEM READY FOR FIRST REBOOT"
     echo "Don’t forget to take out the live USB before powering on the system again."
     exit
@@ -464,6 +462,8 @@ function finalSetup {
     #echo 'Description = Backing up /boot...' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
     #echo 'When = PreTransaction' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
     #echo 'Exec = /usr/bin/rsync -a --delete /boot /.bootbackup' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
+
+    sudo sed -i 's|#GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="false"|GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="true"|g' /etc/default/grub-btrfs/config
 
     echo -e "\nRemove no password sudo rights..."
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
