@@ -99,8 +99,8 @@ function preInstall {
     )
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
+    #read -s -n 1 -p "Press any key to continue . . ."
+    #echo ""
 
     echo "Setting bootloader ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
@@ -219,8 +219,8 @@ function installBase {
 
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
+    #read -s -n 1 -p "Press any key to continue . . ."
+    #echo ""
 }
 
 # Run logged as normal user
@@ -322,8 +322,8 @@ function installSoftware {
 
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
+    #read -s -n 1 -p "Press any key to continue . . ."
+    #echo ""
 }
 
 # Run logged as normal user
@@ -366,8 +366,8 @@ function installSoftwareAur {
     )
     echo "Packages: $(printf "%s " "${PKGS[@]}")"
     yay -S --noconfirm $(printf "%s " "${PKGS[@]}")
-    read -s -n 1 -p "Press any key to continue . . ."
-    echo ""
+    #read -s -n 1 -p "Press any key to continue . . ."
+    #echo ""
 }
 
 # Run logged as normal user
