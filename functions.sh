@@ -328,6 +328,20 @@ function installSoftware {
 # Run logged as normal user
 function installSoftwareAur {
 
+    echo '' | sudo tee -a /etc/pacman.conf
+    echo '[chaotic-aur]' | sudo tee -a /etc/pacman.conf
+    echo '# Brazil' | sudo tee -a /etc/pacman.conf
+    echo 'Server = http://lonewolf-builder.duckdns.org/$repo/$arch' | sudo tee -a /etc/pacman.conf
+    echo '# Germany' | sudo tee -a /etc/pacman.conf
+    echo 'Server = http://chaotic.bangl.de/$repo/$arch' | sudo tee -a /etc/pacman.conf
+    echo '# USA (Cloudflare cached)' | sudo tee -a /etc/pacman.conf
+    echo 'Server = https://repo.kitsuna.net/$arch' | sudo tee -a /etc/pacman.conf
+    echo '# Netherlands' | sudo tee -a /etc/pacman.conf
+    echo 'Server = https://chaotic.tn.dedyn.io/$arch' | sudo tee -a /etc/pacman.conf
+    echo '' | sudo tee -a /etc/pacman.conf
+
+    sudo pacman -Syy
+
     echo "Installing YAY ..."
     cd "${HOME}"
     git clone "https://aur.archlinux.org/yay.git"
