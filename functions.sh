@@ -76,29 +76,8 @@ function preInstall {
     pacman -Syy
 
     echo "Installing needed packages ..."
-    PKGS=(
-        'nano'
-        'sudo'
-        'amd-ucode'
-        'btrfs-progs'
-        'wget'
-        'curl'
-        'git'
-        'grub'
-        'grub-btrfs'
-        'networkmanager'
-        'dhclient'
-        'network-manager-applet'
-        'dialog'
-        'os-prober'
-        'mtools'
-        'linux-headers'
-        'reflector'
-        'xdg-utils'
-        'xdg-user-dirs'
-    )
-    echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
+    echo "Packages: $(printf "%s " "${BASEPKGS[@]}")"
+    pacman -S $(printf "%s " "${BASEPKGS[@]}") --noconfirm --needed
     #read -s -n 1 -p "Press any key to continue . . ."
     #echo ""
 
@@ -159,65 +138,8 @@ function installSetup {
 # Run logged as normal user
 function installBase {
     echo "Installing desktop packages ..."
-
-    PKGS=(
-        # --- XORG Display Rendering
-            'xorg'                  # Base Package
-            'xorg-drivers'          # Display Drivers 
-            'xterm'                 # Terminal for TTY
-            'xorg-server'           # XOrg server
-            'xorg-apps'             # XOrg apps group
-            'xorg-xinit'            # XOrg init
-            'xorg-xinput'           # Xorg xinput
-            'mesa'                  # Open source version of OpenGL
-
-        # --- Setup Desktop
-            'awesome'               # Awesome Desktop
-            'xfce4-power-manager'   # Power Manager 
-            'rofi'                  # Menu System
-            'picom'                 # Translucent Windows
-            'xclip'                 # System Clipboard
-            'polkit-gnome'          # Elevate Applications
-            'gnome-keyring'         # Elevate Applications
-            'lxappearance'          # Set System Themes
-            'arandr'
-            'redshift'
-
-        # --- Login Display Manager
-            'lightdm'                   # Base Login Manager
-            'lightdm-gtk-greeter'
-            'lightdm-gtk-greeter-settings'
-
-        # --- Networking Setup
-            'wpa_supplicant'            # Key negotiation for WPA wireless networks
-            'openvpn'                   # Open VPN support
-            'networkmanager-openvpn'    # Open VPN plugin for NM
-            'libsecret'                 # Library for storing passwords
-        
-        # --- Audio
-            'alsa-utils'        # Advanced Linux Sound Architecture (ALSA) Components https://alsa.opensrc.org/
-            'alsa-plugins'      # ALSA plugins
-            'pulseaudio'        # Pulse Audio sound components
-            'pulseaudio-alsa'   # ALSA configuration for pulse audio
-            'pavucontrol'       # Pulse Audio volume control
-
-        # --- Bluetooth
-            'bluez'                 # Daemons for the bluetooth protocol stack
-            'bluez-utils'           # Bluetooth development and debugging utilities
-            'blueberry'             # Bluetooth configuration tool
-            'pulseaudio-bluetooth'  # Bluetooth support for PulseAudio
-        
-        # --- Printers
-            'cups'                  # Open source printer drivers
-            'cups-pdf'              # PDF support for cups
-            'ghostscript'           # PostScript interpreter
-            'gsfonts'               # Adobe Postscript replacement fonts
-            'hplip'                 # HP Drivers
-            'system-config-printer' # Printer setup  utility
-    )
-
-    echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
+    echo "Packages: $(printf "%s " "${DESKTOPPKGS[@]}")"
+    sudo pacman -S $(printf "%s " "${DESKTOPPKGS[@]}") --noconfirm --needed
     #read -s -n 1 -p "Press any key to continue . . ."
     #echo ""
 }
@@ -225,102 +147,8 @@ function installBase {
 # Run logged as normal user
 function installSoftware {
     echo "Installing user selected packages ..."
-
-    PKGS=(
-        # SYSTEM --------------------------------------------------------------
-        'virtualbox'
-        'virtualbox-host-modules-arch'
-        'qt5-x11extras'
-        'qt5ct'
-        'snapper'
-
-        # TERMINAL UTILITIES --------------------------------------------------
-        'bash-completion'       # Tab completion for Bash
-        'bleachbit'             # File deletion utility
-        'cronie'                # cron jobs
-        'file-roller'           # Archive utility
-        'gtop'                  # System monitoring via terminal
-        'gufw'                  # Firewall manager
-        'hardinfo'              # Hardware info app
-        'htop'                  # Process viewer
-        'neofetch'              # Shows system info when you launch terminal
-        'ntp'                   # Network Time Protocol to set time via network.
-        'numlockx'              # Turns on numlock in X11
-        'openssh'               # SSH connectivity tools
-        'p7zip'                 # 7z compression program
-        'rsync'                 # Remote file sync utility
-        'speedtest-cli'         # Internet speed via terminal
-        'terminus-font'         # Font package with some bigger fonts for login terminal
-        #'tlp'                   # Advanced laptop power management
-        'unrar'                 # RAR compression program
-        'unzip'                 # Zip compression program
-        'terminator'            # Terminal emulator
-        'vim'                   # Terminal Editor
-        'zenity'                # Display graphical dialog boxes via shell scripts
-        'zip'                   # Zip compression program
-        'zsh'                   # ZSH shell
-        'zsh-completions'       # Tab completion for ZSH
-
-        # DISK UTILITIES ------------------------------------------------------
-
-        'android-tools'         # ADB for Android
-        'android-file-transfer' # Android File Transfer
-        'autofs'                # Auto-mounter
-        'dosfstools'            # DOS Support
-        'exfat-utils'           # Mount exFat drives
-        'gparted'               # Disk utility
-        'parted'                # Disk utility
-        'gvfs-mtp'              # Read MTP Connected Systems
-        'gvfs-smb'              # More File System Stuff
-        'nautilus'              # Filesystem browser
-        'nautilus-share'        # File Sharing in Nautilus
-        'ntfs-3g'               # Open source implementation of NTFS file system
-        'samba'                 # Samba File Sharing
-        'smartmontools'         # Disk Monitoring
-        'smbclient'             # SMB Connection 
-        'xfsprogs'              # XFS Support
-
-        # GENERAL UTILITIES ---------------------------------------------------
-
-        'flameshot'             # Screenshots
-        'freerdp'               # RDP Connections
-        'libvncserver'          # VNC Connections
-        'remmina'               # Remote Connection
-        'veracrypt'             # Disc encryption utility
-        'variety'               # Wallpaper changer
-        'ttf-fira-code'
-        'qbittorrent'
-
-        # DEVELOPMENT ---------------------------------------------------------
-
-        'gedit'                 # Text editor
-        'meld'                  # File/directory comparison
-        'nodejs'                # Javascript runtime environment
-        'npm'                   # Node package manager
-        'python'                # Scripting language
-        'yarn'                  # Dependency management (Hyper needs this)
-
-        # MEDIA ---------------------------------------------------------------
-
-        'celluloid'             # Video player
-        'vlc'                   # Video player
-        
-        # GRAPHICS AND DESIGN -------------------------------------------------
-
-        'gcolor2'               # Colorpicker
-        'krita'                 
-        'ristretto'             # Multi image viewer
-
-        # PRODUCTIVITY --------------------------------------------------------
-
-        'hunspell'              # Spellcheck libraries
-        'hunspell-en_US'           # English spellcheck library
-        'xpdf'                  # PDF viewer
-
-    )
-
-    echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    sudo pacman -S $(printf "%s " "${PKGS[@]}") --noconfirm --needed
+    echo "Packages: $(printf "%s " "${USERPKGS[@]}")"
+    sudo pacman -S $(printf "%s " "${USERPKGS[@]}") --noconfirm --needed
     #read -s -n 1 -p "Press any key to continue . . ."
     #echo ""
 }
@@ -349,36 +177,8 @@ function installSoftwareAur {
     makepkg -si --noconfirm
 
     echo "Installing AUR packages ..."
-    PKGS=(
-        # UTILITIES -----------------------------------------------------------
-        'i3lock-fancy'              # Screen locker
-        'corectrl'
-        'pamac-aur-git'
-        'visual-studio-code-bin'
-        'virtualbox-ext-oracle'
-        'pnmixer'                   # System tray volume control
-        'xfce4-mixer'
-        'nitrogen'
-        'snapper-gui-git'
-        'etcher-bin'
-        'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
-        'hunspell-pt-br'           # English spellcheck library
-        
-        # MEDIA ---------------------------------------------------------------
-        'screenkey'                 # Screencast your keypresses
-        'lbry-app-bin'              # LBRY Linux Application
-
-        # COMMUNICATIONS ------------------------------------------------------
-        'firefox'
-
-        # THEMES --------------------------------------------------------------
-        'materia-gtk-theme'             # Desktop Theme
-        'papirus-icon-theme'            # Desktop Icons
-        'capitaine-cursors'             # Cursor Themes
-        'qt5-styleplugins'
-    )
-    echo "Packages: $(printf "%s " "${PKGS[@]}")"
-    yay -S --noconfirm $(printf "%s " "${PKGS[@]}")
+    echo "Packages: $(printf "%s " "${AURPKGS[@]}")"
+    yay -S --noconfirm $(printf "%s " "${AURPKGS[@]}")
     #read -s -n 1 -p "Press any key to continue . . ."
     #echo ""
 }
