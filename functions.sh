@@ -265,20 +265,16 @@ function finalSetup {
     sudo systemctl start grub-btrfs.path
     sudo systemctl enable grub-btrfs.path
 
-    #  Hooks
-    #echo '[Trigger]' | sudo tee /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Operation = Upgrade' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Operation = Install' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Operation = Remove' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Type = Package' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo -e "Target = linux*\n" | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo '[Action]' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Depends = rsync' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Description = Backing up /boot...' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'When = PreTransaction' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-    #echo 'Exec = /usr/bin/rsync -a --delete /boot /.bootbackup' | sudo tee -a /usr/share/libalpm/hooks/50_bootbackup.hook
-
     sudo sed -i 's|#GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="false"|GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="true"|g' /etc/default/grub-btrfs/config
+
+    # Wine
+    sudo pacman -S wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader --noconfirm --needed
+
+    # DXVK dependencies / Vulkan API
+    sudo pacman -S lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader lib32-gnutls lib32-libldap lib32-libgpg-error lib32-sqlite lib32-libpulse vulkan-tools --noconfirm --needed
+
+    # Lutris
+    sudo pacman -S lutris --noconfirm --needed
 
     echo -e "\nRemove no password sudo rights..."
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
