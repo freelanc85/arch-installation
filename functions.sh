@@ -182,9 +182,13 @@ function installSoftwareAur {
 
     echo "Installing AUR packages ..."
     echo "Packages: $(printf "%s " "${AURPKGS[@]}")"
-    yay -S --noconfirm $(printf "%s " "${AURPKGS[@]}")
-    #read -s -n 1 -p "Press any key to continue . . ."
-    #echo ""
+
+    for PKG in "${AURPKGS[@]}"; do
+        yay -S --noconfirm $PKG
+
+        read -s -n 1 -p "Press any key to continue . . ."
+        echo ""
+    done
 }
 
 # Run logged as normal user
