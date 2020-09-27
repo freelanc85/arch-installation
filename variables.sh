@@ -10,3 +10,4 @@ LANG=en_US.UTF-8
 KEYMAP=br-abnt2
 TIMEZONE=America/Sao_Paulo
 X11KEYMAP=br
+PASSWORD=0

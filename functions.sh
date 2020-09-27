@@ -94,12 +94,10 @@ function preInstall {
     echo "Setting network ..."
     systemctl enable --now NetworkManager
 
-    echo "Enter new password for root: "
-    passwd root
+    echo -e "${PASSWORD}\n${PASSWORD}" | passwd root
 
-    echo "Enter new password for ${USER}: "
     useradd -mG audio,video,wheel,storage,network,rfkill -s /bin/bash $USER
-    passwd $USER
+    echo -e "${PASSWORD}\n${PASSWORD}" | passwd $USER
 
     echo  -e "\nSYSTEM READY FOR FIRST REBOOT"
     echo "Don’t forget to take out the live USB before powering on the system again."
