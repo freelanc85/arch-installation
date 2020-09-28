@@ -29,10 +29,10 @@ loadkeys br-abnt2
 pacman -Syy git --noconfirm --needed
 ```
 ```bash
-git clone https://github.com/fsimchen/ArchMatic
+git clone https://github.com/fsimchen/arch
 ```
 ```bash
-cd ArchMatic
+cd arch
 ```
 ```bash
 sh 1_preInstallSetup.sh
@@ -46,10 +46,10 @@ arch-chroot /mnt
 pacman -Syy git btrfs-progs --noconfirm --needed
 ```
 ```bash
-git clone https://github.com/fsimchen/ArchMatic
+git clone https://github.com/fsimchen/arch
 ```
 ```bash
-cd ArchMatic
+cd arch
 ```
 ```bash
 sh 2_preInstall.sh
@@ -66,10 +66,10 @@ Step 3 (Log in as root)
 loadkeys br-abnt2
 ```
 ```bash
-git clone https://github.com/fsimchen/ArchMatic
+git clone https://github.com/fsimchen/arch
 ```
 ```bash
-cd ArchMatic
+cd arch
 ```
 ```bash
 sh 3_installSetup.sh
@@ -80,10 +80,10 @@ exit
 ---
 Step 4 (Log in as normal user now)
 ```bash
-git clone https://github.com/fsimchen/ArchMatic
+git clone https://github.com/fsimchen/arch
 ```
 ```bash
-cd ArchMatic
+cd arch
 ```
 ```bash
 sh 4_install.sh
