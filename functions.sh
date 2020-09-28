@@ -7,7 +7,7 @@ function preInstallSetup {
     timedatectl set-ntp true
 
     echo "Setting pacman mirrorlist..."
-    reflector -c "United States" -f 25 --sort rate --save /etc/pacman.d/mirrorlist
+    reflector -c "United States" -f 10 --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Syy
 
     echo "Setting disk partitions..."
@@ -130,7 +130,7 @@ function installSetup {
     echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain ${HOSTNAME}\n" >> /etc/hosts
 
     echo "Setting mirrorlist ..."
-    reflector -c "United States" -f 25 --sort rate --save /etc/pacman.d/mirrorlist
+    reflector -c "United States" -f 10 --sort rate --save /etc/pacman.d/mirrorlist
 }
 
 # Run logged as normal user
@@ -154,29 +154,21 @@ function installSoftware {
 # Run logged as normal user
 function installSoftwareAur {
 
-    echo '' | sudo tee -a /etc/pacman.conf
-    echo '[chaotic-aur]' | sudo tee -a /etc/pacman.conf
-    echo '# Brazil' | sudo tee -a /etc/pacman.conf
-    echo 'Server = https://lonewolf.pedrohlc.com/$repo/$arch' | sudo tee -a /etc/pacman.conf
-
-    echo '# USA' | sudo tee -a /etc/pacman.conf
-    echo 'Server = https://builds.garudalinux.org/repos/$repo/$arch' | sudo tee -a /etc/pacman.conf
-    echo 'Server = https://repo.kitsuna.net/$arch' | sudo tee -a /etc/pacman.conf
-    
-    echo '# Netherlands' | sudo tee -a /etc/pacman.conf
-    echo 'Server = https://chaotic.tn.dedyn.io/$arch' | sudo tee -a /etc/pacman.conf
-    
-    echo '# Germany' | sudo tee -a /etc/pacman.conf
-    echo 'Server = http://chaotic.bangl.de/$repo/$arch' | sudo tee -a /etc/pacman.conf
-    echo '' | sudo tee -a /etc/pacman.conf
-
-    sudo pacman -Syy
-
     echo "Installing YAY ..."
     cd "${HOME}"
     git clone "https://aur.archlinux.org/yay.git"
     cd ${HOME}/yay
     makepkg -si --noconfirm
+
+    yay -S --noconfirm chaotic-mirrorlist
+    yay -S --noconfirm chaotic-keyring
+
+    echo '' | sudo tee -a /etc/pacman.conf
+    echo '[chaotic-aur]' | sudo tee -a /etc/pacman.conf
+    echo 'Include = /etc/pacman.d/chaotic-mirrorlist' | sudo tee -a /etc/pacman.conf
+    echo '' | sudo tee -a /etc/pacman.conf
+    
+    sudo pacman -Syy
 
     echo "Installing AUR packages ..."
     echo "Packages: $(printf "%s " "${AURPKGS[@]}")"
