@@ -10,18 +10,39 @@ function preInstallSetup {
     reflector -c "United States" -f 10 --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Syy
 
-    echo "Setting disk partitions..."
-    cfdisk $DISK
-
     echo "Setting filesystem..."
-    #mkfs.fat32 -L "BOOT" "${DISK}1"
-    mkfs.btrfs -f -L "ROOT" "${DISK}1"
+
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        cfdisk $DISK
+        ROOTPARTITION=1
+    else
+        echo 'Command: n'
+        echo 'Last sector: +200M'
+        echo 'Hex code: ef00'
+        echo ''
+        echo 'Command: n'
+        echo ''
+        echo 'Command: w'
+        echo 'Y'
+        echo ''
+        gdisk /dev/sda
+        mkfs.fat32 -F32 -L "BOOT" "${DISK}1"
+        ROOTPARTITION=2
+    fi
+    
+    mkfs.btrfs -f -L "ROOT" "${DISK}${ROOTPARTITION}"
 
     echo "Setting btrfs subvolumes..."
-    mount "${DISK}1" /mnt
+    mount "${DISK}${ROOTPARTITION}" /mnt
 
     btrfs su cr /mnt/@
-    btrfs su cr /mnt/@grub
+    
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        btrfs su cr /mnt/@grub
+    fi
+
     btrfs su cr /mnt/@srv
     btrfs su cr /mnt/@home
     btrfs su cr /mnt/@var
@@ -35,20 +56,31 @@ function preInstallSetup {
     #echo ""
     
     # Mount root subvolume
-    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}1" /mnt
+    mount -o noatime,compress=lzo,space_cache,subvol=@ "${DISK}${ROOTPARTITION}" /mnt
 
     # Create dirs for subvolumes
     mkdir /mnt/{boot,srv,home,.snapshots,tmp,var,swap}
-    mkdir /mnt/boot/grub
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        mkdir /mnt/boot/grub
+    fi
     
     # Mount subvolumes
-    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}1" /mnt/home
-    mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}1" /mnt/boot/grub
-    mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}1" /mnt/srv
-    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}1" /mnt/.snapshots
-    mount -o nodatacow,subvol=@tmp "${DISK}1" /mnt/tmp
-    mount -o nodatacow,subvol=@var "${DISK}1" /mnt/var
-    mount -o nodatacow,subvol=@swap "${DISK}1" /mnt/swap
+    mount -o noatime,compress=lzo,space_cache,subvol=@home "${DISK}${ROOTPARTITION}" /mnt/home
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        mount -o noatime,compress=lzo,space_cache,subvol=@grub "${DISK}${ROOTPARTITION}" /mnt/boot/grub
+    fi
+    mount -o noatime,compress=lzo,space_cache,subvol=@srv "${DISK}${ROOTPARTITION}" /mnt/srv
+    mount -o noatime,compress=lzo,space_cache,subvol=@.snapshots "${DISK}${ROOTPARTITION}" /mnt/.snapshots
+    mount -o nodatacow,subvol=@tmp "${DISK}${ROOTPARTITION}" /mnt/tmp
+    mount -o nodatacow,subvol=@var "${DISK}${ROOTPARTITION}" /mnt/var
+    mount -o nodatacow,subvol=@swap "${DISK}${ROOTPARTITION}" /mnt/swap
+
+    if [ $BOOTTYPE == 'EFI' ]
+    then
+        mount "${DISK}1" /mnt/boot
+    fi
 
     chattr +C /mnt/tmp/
     chattr +C /mnt/var/
@@ -81,13 +113,24 @@ function preInstall {
     #read -s -n 1 -p "Press any key to continue . . ."
     #echo ""
 
+    if [ $BOOTTYPE == 'EFI' ]
+    then
+        pacman -S efibootmgr mtools dosfstools --noconfirm --needed
+    fi
+
     echo "Setting bootloader ..."
     sed -i 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
     mkinitcpio -p linux
-    grub-install --target=i386-pc ${DISK}
 
-    # Activate grub flag to boot on btrf subvolume
-    sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        grub-install --target=i386-pc ${DISK}
+        
+        # Activate grub flag to boot on btrf subvolume
+        sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="subvol=btrfs-root |g' /etc/default/grub
+    else
+        grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+    fi
     
     grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -263,7 +306,10 @@ function finalSetup {
     sudo systemctl start grub-btrfs.path
     sudo systemctl enable grub-btrfs.path
 
-    sudo sed -i 's|#GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="false"|GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="true"|g' /etc/default/grub-btrfs/config
+    if [ $BOOTTYPE == 'BIOS' ]
+    then
+        sudo sed -i 's|#GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="false"|GRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION="true"|g' /etc/default/grub-btrfs/config
+    fi
 
     # Wine
     sudo pacman -S wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader --noconfirm --needed
