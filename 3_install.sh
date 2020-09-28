@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-source ./variables.sh
-source ./packages/*
-source ./functions/*
+source ./autoload.sh
 
 echo "Setting language and locale . . ."
 language
