@@ -3,7 +3,7 @@
 # Define variables
 DISK=/dev/sda
 KEYBOARD=br-abnt2
-USER=felipe
+NORMALUSER=felipe
 HOSTNAME=archfs
 LOCALE='en_US.UTF-8 UTF-8'
 LANG=en_US.UTF-8

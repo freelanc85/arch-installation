@@ -35,7 +35,7 @@ git clone https://github.com/fsimchen/arch
 cd arch
 ```
 ```bash
-sh 1_preInstallSetup.sh
+sh 1_filesystem.sh
 ```
 ---
 Step 2
@@ -43,16 +43,10 @@ Step 2
 arch-chroot /mnt
 ```
 ```bash
-pacman -Syy git btrfs-progs --noconfirm --needed
+cd /opt/arch
 ```
 ```bash
-git clone https://github.com/fsimchen/arch
-```
-```bash
-cd arch
-```
-```bash
-sh 2_preInstall.sh
+sh 2_base.sh
 ```
 ```bash
 exit
@@ -61,32 +55,15 @@ exit
 reboot
 ```
 ---
-Step 3 (Log in as root)
+Step 3 (Log in as normal user)
 ```bash
 loadkeys br-abnt2
 ```
 ```bash
-git clone https://github.com/fsimchen/arch
+cd /opt/arch
 ```
 ```bash
-cd arch
-```
-```bash
-sh 3_installSetup.sh
-```
-```bash
-exit
-```
----
-Step 4 (Log in as normal user now)
-```bash
-git clone https://github.com/fsimchen/arch
-```
-```bash
-cd arch
-```
-```bash
-sh 4_install.sh
+sh 3_install.sh
 ```
 ---
 ### Don't just run these scripts. Examine them. Customize them. Create your own versions.
@@ -94,7 +71,7 @@ sh 4_install.sh
 ---
 
 ### System Description
-This runs Awesome Window Manager with the base configuration from the Material-Awesome project <https://github.com/ChrisTitusTech/material-awesome>.
+This runs Awesome Window Manager with the base configuration from the Material-Awesome project <https://github.com/fsimchen/material-awesome>.
 
 ---
 
