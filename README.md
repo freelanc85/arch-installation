@@ -26,7 +26,7 @@ Step 1
 loadkeys br-abnt2
 ```
 ```bash
-pacman -Syy git --noconfirm --needed
+pacman -Syy git
 ```
 ```bash
 git clone https://github.com/fsimchen/arch

@@ -17,5 +17,6 @@ echo "Setting filesystem . . ."
 filesystem
 
 echo "Copy scripts to /opt/arch for reuse later . . ."
+mkdir /mnt/opt/arch
 cp –R $HOME/arch /mnt/opt/arch
 chmod -R 777 /mnt/opt/arch
