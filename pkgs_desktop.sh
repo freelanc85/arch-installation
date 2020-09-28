@@ -20,8 +20,6 @@ DESKTOPPKGS=(
     'polkit-gnome'          # Elevate Applications
     'gnome-keyring'         # Elevate Applications
     'lxappearance'          # Set System Themes
-    'arandr'
-    'redshift'
 
     # --- Login Display Manager
     'lightdm'                   # Base Login Manager
@@ -54,4 +52,19 @@ DESKTOPPKGS=(
     'gsfonts'               # Adobe Postscript replacement fonts
     'hplip'                 # HP Drivers
     'system-config-printer' # Printer setup  utility
+
+    # CUSTOM --------------------------------------------------------------
+    'gtk-engine-murrine'
+    'gtk-engines'
+    'ttf-roboto'
+    'noto-fonts-emoji'
+    'qbittorrent'
+    'gnome-shell'
+    'sassc'
+    'dbeaver'
+    'winetricks'
+    'exa'
+    'docker'
+    'docker-compose'
+    'gnome-themes-extra'
 )

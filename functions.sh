@@ -325,6 +325,19 @@ function finalSetup {
     # Lutris
     sudo pacman -S lutris --noconfirm --needed
 
+    # Theming
+    git clone --depth 1 https://github.com/afraidofmusic/materia-theme-dracula.git
+    cd materia-theme-dracula
+    sudo ./install.sh
+
+    cp .gtkrc-2.0 $HOME/.gtkrc-2.0
+    mkdir $HOME/.config/gtk-3.0
+    cp .gtk-3.0_settings.ini $HOME/.config/gtk-3.0/settings.ini
+
+    gsettings set org.gnome.desktop.interface gtk-theme Materia-dracula
+    gtk-application-prefer-dark-theme = true
+
+
     echo -e "\nRemove no password sudo rights..."
     sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 

@@ -23,8 +23,18 @@ AURPKGS=(
     'firefox'
 
     # THEMES --------------------------------------------------------------
-    'materia-gtk-theme'             # Desktop Theme
+    #'materia-gtk-theme'             # Desktop Theme
     'papirus-icon-theme'            # Desktop Icons
     'capitaine-cursors'             # Cursor Themes
     'qt5-styleplugins'
+
+    # CUSTOM --------------------------------------------------------------
+    'arandr'
+    'redshift'
+    'ttf-google-fonts-git'
+    'layan-cursor-theme-git'
+    'wps-office'
+    'wps-office-extension-portuguese-brazillian-dictionary'
+    'wps-office-uit-pt-br'
+    'nerd-fonts-mononoki'
 )
