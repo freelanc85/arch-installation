@@ -96,7 +96,7 @@ function preInstall {
     truncate -s 0 /swap/swapfile
     chattr +C /swap/swapfile
     btrfs property set /swap/swapfile compression none
-    dd if=/dev/zero of=/swap/swapfile bs=1G count=2 status=progress
+    dd if=/dev/zero of=/swap/swapfile bs=1G count=4 status=progress
     chmod 600 /swap/swapfile
     mkswap /swap/swapfile
     swapon /swap/swapfile
