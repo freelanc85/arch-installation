@@ -59,7 +59,7 @@ DESKTOPPKGS=(
     'ttf-roboto'
     'noto-fonts-emoji'
     'qbittorrent'
-    'gnome-shell'
+    #'gnome-shell'
     'sassc'
     'dbeaver'
     'exa'
