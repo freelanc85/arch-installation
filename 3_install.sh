@@ -18,7 +18,7 @@ echo "Setting AUR repository mirrorlist . . ."
 reposaur
 
 echo "Dependency fix for ttf-google-fonts-git . . ."
-sudo pacman -Rdd adobe-source-code-pro-fonts
+sudo pacman -Rdd adobe-source-code-pro-fonts --noconfirm
 
 echo "Installing AUR packages: $(printf "%s " "${AURPKGS[@]}")"
 for PKG in "${AURPKGS[@]}"; do
