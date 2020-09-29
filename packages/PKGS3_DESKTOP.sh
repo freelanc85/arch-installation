@@ -62,7 +62,6 @@ DESKTOPPKGS=(
     'gnome-shell'
     'sassc'
     'dbeaver'
-    'winetricks'
     'exa'
     'docker'
     'docker-compose'
