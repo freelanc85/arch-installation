@@ -3,7 +3,8 @@
 BASEPKGS=(
     'nano'
     'sudo'
-    'amd-ucode'
+    'amd-ucode' 
+    'intel-ucode'
     'btrfs-progs'
     'wget'
     'curl'
