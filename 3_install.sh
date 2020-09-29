@@ -11,6 +11,9 @@ echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain $
 echo "Installing desktop and user packages: $(printf "%s " "${DESKTOPPKGS[@]} ${USERPKGS[@]}")"
 sudo pacman -S $(printf "%s " "${DESKTOPPKGS[@]} ${USERPKGS[@]}") --noconfirm --needed
 
+echo "Installing YAY ..."
+installyay
+
 echo "Setting AUR repository mirrorlist . . ."
 reposaur
 
