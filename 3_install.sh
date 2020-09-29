@@ -11,9 +11,6 @@ echo -e "127.0.0.1 localhost\n::1 localhost\n127.0.0.1 ${HOSTNAME}.localdomain $
 echo "Installing desktop and user packages: $(printf "%s " "${DESKTOPPKGS[@]} ${USERPKGS[@]}")"
 sudo pacman -S $(printf "%s " "${DESKTOPPKGS[@]} ${USERPKGS[@]}") --noconfirm --needed
 
-echo "Installing YAY ..."
-installyay
-
 echo "Setting AUR repository mirrorlist . . ."
 reposaur
 
@@ -61,7 +58,9 @@ sudo gpasswd -a $USER vboxusers
 
 # VirtualBox theme fix
 sudo sed -i 's|Exec=VirtualBox %U|Exec=VirtualBox -style Fusion %U|g' /usr/share/applications/virtualbox.desktop
-sudo mkdir $HOME/.local/share/applications/
+mkdir $HOME/.local/
+mkdir $HOME/.local/share/
+mkdir $HOME/.local/share/applications/
 sudo cp /usr/share/applications/virtualbox.desktop $HOME/.local/share/applications/
 
 echo "Setting theme for AwesomeWM ..."
@@ -119,11 +118,10 @@ sudo pacman -S lutris --noconfirm --needed
 git clone --depth 1 https://github.com/afraidofmusic/materia-theme-dracula.git
 cd materia-theme-dracula
 sudo ./install.sh
-cp ./configs/.gtkrc-2.0 $HOME/.gtkrc-2.0
+cp /opt/arch/configs/.gtkrc-2.0 $HOME/.gtkrc-2.0
 mkdir $HOME/.config/gtk-3.0
-cp ./configs/.gtk-3.0_settings.ini $HOME/.config/gtk-3.0/settings.ini
-gsettings set org.gnome.desktop.interface gtk-theme Materia-dracula
-gtk-application-prefer-dark-theme = true
+cp /opt/arch/configs/.gtk-3.0_settings.ini $HOME/.config/gtk-3.0/settings.ini
+gsettings set org.gnome.desktop.interface gtk-theme Materia-dark
 
 echo "Remove no password sudo rights . . ."
 sudo sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
