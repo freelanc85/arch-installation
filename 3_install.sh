@@ -53,10 +53,10 @@ sudo systemctl enable --now NetworkManager.service
 echo "Setting keymap on Xorg ..."
 sudo localectl set-x11-keymap $X11KEYMAP
 
-echo "Setting the amdgpu driver on grub..."
-sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 |g' /etc/default/grub
+echo "Setting the grub..."
+#sudo sed -i 's|GRUB_CMDLINE_LINUX_DEFAULT="|GRUB_CMDLINE_LINUX_DEFAULT="radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 |g' /etc/default/grub
 sudo grub-mkconfig -o /boot/grub/grub.cfg
-sudo sed -i 's|EndSection|        Option "TearFree" "on"\nEndSection|g' /usr/share/X11/xorg.conf.d/10-amdgpu.conf
+#sudo sed -i 's|EndSection|        Option "TearFree" "on"\nEndSection|g' /usr/share/X11/xorg.conf.d/10-amdgpu.conf
 
 echo "Setting VirtualBox ..."
 sudo modprobe vboxdrv

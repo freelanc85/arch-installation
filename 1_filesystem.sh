@@ -5,7 +5,7 @@ echo "Setting NTP . . ."
 timedatectl set-ntp true
 
 echo "Setting pacman mirrorlist . . ."
-reflector -c "United States" -f 10 --sort rate --save /etc/pacman.d/mirrorlist
+reflector -c "Australia" -f 10 --sort rate --save /etc/pacman.d/mirrorlist
 pacman -Syy
 
 echo "Installing git and btrfs-progs . . ."

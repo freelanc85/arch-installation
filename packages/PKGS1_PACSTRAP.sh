@@ -7,4 +7,6 @@ PACSTRAPPKGS=(
     'linux-firmware'
     'git'
     'btrfs-progs'
+    'sudo'
+    'alacritty'
 )
